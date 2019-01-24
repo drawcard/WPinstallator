@@ -24,8 +24,10 @@ define( "SCRIPT_DEBUG", true ); ```
 
 ## Run the script
 
-`chmod +x wpinstall.sh`
+```bash
+git clone https://github.com/drawcard/installwp/ ~/.installwp
+echo -e "\n alias installwp='sh ~/.installwp/wpinstall.sh' # WP Install script" >> ~/.bashrc
+source ~/.bashrc
+# Navigate to the website folder you want to install and run installwp
+```
 
-in .bashrc: `alias wpinstall='bash SCRIPT_PATH'`
-
-Run with `wpinstall`
