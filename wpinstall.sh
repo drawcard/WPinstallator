@@ -34,7 +34,7 @@ echo -e "${blue}* DB user ${white}"
 read -e dbuser
 echo -e "${blue}* DB password ${white}"
 read -e dbpass
-echo -e "${blue}* Language (default en_EN) ${white}"
+echo -e "${blue}* Language (Australia: en_AU) ${white}"
 read -e lang
 echo -e "${blue}Run install? (y/n) ${white}"
 read -e run
@@ -99,20 +99,99 @@ apache_modules:
 EOL
 
 # set pretty urls
-wp rewrite structure '/%postname%/' --hard
+wp rewrite structure '/%year%/%monthnum%/%postname%/' --hard
 wp rewrite flush --hard
 
 # Update WordPress options
-wp option update timezone_string "Europe/Paris"
-wp option update blog_public "off"
-wp option update default_ping_status 'closed'
+
+    # General Setup
+wp option update blogname '$pname'
+wp option update blogdescription 'Welcome to the website of $pname'
+wp option update blog_public 'on' # set to off to disable search engine crawling
+wp option update admin_email '$adminemail'
+wp post delete $(wp post list --post_type='page' --format=ids) # remove 'hello world' page
+wp post delete $(wp post list --post_type='post' --format=ids) # remove 'hello world' post
+
+    # Media
+wp option update thumbnail_size_w '400'
+wp option update thumbnail_size_h '400'
+wp option update thumbnail_crop '0'
+wp option update medium_size_w '800'
+wp option update medium_size_h '0'
+wp option update large_size_w '1600'
+wp option update large_size_h '0'
+wp option update image_default_size 'medium'
+image_default_align 'right'
+wp media regenerate # regenerate any existing files
+
+    # Comments
+wp option update comment_moderation 'true'
+wp option update default_comment_status 'closed'
+wp option update comments_notify '1'
+wp option update default_ping_status 'closed' 
 wp option update default_pingback_flag '0'
-wp option update blogdescription "This is a new project!!"
+wp option update close_comments_for_old_posts '1'
+
+    # Default pages
+wp post create --post_type=page --post_title='Homepage' --post_content='Edit this page in Elementor to get started.' --post_status=publish
+wp post create --post_type=page --post_title='About' --post_content='Edit this page in Elementor to get started.' --post_status=publish 
+wp post create --post_type=page --post_title='Contact' --post_content='Edit this page in Elementor to get started.' --post_status=publish
+wp post create --post_type=page --post_title='Terms and Conditions' --post_content='Edit this page in Elementor to get started.' --post_status=publish
+wp post create --post_type=elementor_library --post_title='Under Maintenance' --post_content='This website is under maintenace - please visit again soon.' --post_status=publish
+
+    # Reading
+wp option update page_on_front $(wp post list --post_type=page --pagename="homepage" --format=ids);
+wp option update show_on_front 'page'
 
 # generate htaccess
 wp rewrite flush --hard
 
-wp plugin delete hello
+# setup elementor hello theme
+wp theme install https://github.com/pojome/elementor-hello-theme/archive/master.zip --activate
+
+# remove other themes
+wp theme delete kubrick
+wp theme delete twentyten
+wp theme delete twentyeleven
+wp theme delete twentytwelve
+wp theme delete twentythirteen
+wp theme delete twentyfourteen
+wp theme delete twentyfifteen
+wp theme delete twentysixteen
+wp theme delete twentyseventeen
+wp theme delete twentyeighteen
+wp theme delete twentynineteen
+# future proofing
+wp theme delete twentytwenty
+wp theme delete twentytwentyone
+wp theme delete twentytwentytwo
+
+# delete OOTB plugins
+wp plugin delete akismet hello
+
+# add plugins
+wp plugin install elementor --activate
+wp plugin install wp-cerber --activate
+
+# Grab 'pro' plugins from another directory and set up
+cp -r ~/wp-pro-plugins ./wp-content/wp-plugins
+
+# Activate Elementor Pro
+echo -e "${blue}* Please enter your Elementor Pro activation key  (or Enter key to dismiss)${white}"
+read -e elemkey
+wp elementor-pro license activate $elemkey
+
+# Elementor options setting
+wp option update elementor_maintenance_mode_exclude_mode 'logged_in'
+wp option update elementor_maintenance_mode_template_id $(wp post list --post_type="elementor_library" --format=ids);
+wp option update elementor_maintenance_mode_mode 'coming_soon'
+
+# Activate WP DB Migrate Pro
+echo -e "${blue}* Please enter your WP DB Migrate Pro activation key (or Enter key to dismiss) ${white}"
+read -e wpdbkey
+cat >> wp-config.php <<EOL
+    define( 'WPMDB_LICENCE', '$wpdbkey' );
+EOL
 
 echo -e "${green}* \n WP installing finished! \n "
 echo -e "Now you can login as user you have chosen. Have fun! \n ${white}"
