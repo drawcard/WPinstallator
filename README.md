@@ -16,10 +16,11 @@ define( "SCRIPT_DEBUG", true ); ```
 
 - Add wp-cli.yml config.
 - Add rewrite structure.
-- Update Update WordPress options.
+- Update WordPress options.
 - Generate htaccess.
 - Delete Hello plugin.
-
+- Install Elementor Pro & WP DB Migrate Pro
+- Configure stuff for Elementor
 
 ## Run the script
 
