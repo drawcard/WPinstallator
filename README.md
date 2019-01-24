@@ -26,7 +26,7 @@ define( "SCRIPT_DEBUG", true ); ```
 
 ```bash
 git clone https://github.com/drawcard/installwp/ ~/.installwp
-echo -e "\n alias installwp='sh ~/.installwp/wpinstall.sh' # WP Install script" >> ~/.bashrc
+echo -e "\n alias installwp='bash ~/.installwp/wpinstall.sh' # WP Install script" >> ~/.bashrc
 source ~/.bashrc
 # Navigate to the website folder you want to install and run installwp
 ```
