@@ -15,10 +15,10 @@ define( "SAVEQUERIES", true );
 define( "SCRIPT_DEBUG", true ); ```
 
 - Add wp-cli.yml config.
-- Add rewrite structure.
-- Update WordPress options.
-- Generate htaccess.
-- Delete Hello plugin.
+- Add rewrite structure
+- Update WordPress options
+- Generate htaccess
+- Cleanup & delete default WP stuff that is not needed
 - Install Elementor Pro & WP DB Migrate Pro
 - Configure stuff for Elementor
 
