@@ -14,7 +14,7 @@ yellow="\033[33m"
 
 echo -e "To install in a subfolder, write the folder name.\n"
 echo -e "Otherwise leave empty to install in root:"
-read -e folder
+read folder
 
 if [[ "$folder" != "" ]]; then
     mkdir $folder && cd $folder
@@ -27,17 +27,17 @@ echo "WordPress Install Script"
 echo "============================================"
 
 echo -e "${blue}* Project name ${white}"
-read -e pname
+read pname
 echo -e "${blue}* DB name ${white}"
-read -e dbname
+read dbname
 echo -e "${blue}* DB user ${white}"
-read -e dbuser
+read dbuser
 echo -e "${blue}* DB password ${white}"
-read -e dbpass
+read dbpass
 echo -e "${blue}* Language (Australia: en_AU) ${white}"
-read -e lang
+read lang
 echo -e "${blue}Run install? (y/n) ${white}"
-read -e run
+read run
 
 if [[ "$run" == n ]]; then
    exit
@@ -72,19 +72,19 @@ define( "SCRIPT_DEBUG", true );
 PHP
 
 echo -e "${blue}Site URL (without http://):${white}"
-read -e siteurl
+read siteurl
 
 echo -e "${blue}Site title:${white}"
-read -e sitetitle
+read sitetitle
 
 echo -e "${blue}WP-admin User:${white}"
-read -e adminuser
+read adminuser
 
 echo -e "${blue}WP-admin Password:${white}"
-read -e adminpassword
+read adminpassword
 
 echo -e "${blue}WP-admin Email:${white}"
-read -e adminemail
+read adminemail
 
 echo -e "Running WP-CLI core install"
 wp core install --url="http://$siteurl" --title="$sitetitle" --admin_user="$adminuser" --admin_password="$adminpassword" --admin_email="$adminemail"
@@ -178,7 +178,7 @@ cp -r ~/wp-pro-plugins ./wp-content/wp-plugins
 
 # Activate Elementor Pro
 echo -e "${blue}* Please enter your Elementor Pro activation key  (or Enter key to dismiss)${white}"
-read -e elemkey
+read elemkey
 wp elementor-pro license activate $elemkey
 
 # Elementor options setting
@@ -188,10 +188,13 @@ wp option update elementor_maintenance_mode_mode 'coming_soon'
 
 # Activate WP DB Migrate Pro
 echo -e "${blue}* Please enter your WP DB Migrate Pro activation key (or Enter key to dismiss) ${white}"
-read -e wpdbkey
+read wpdbkey
 cat >> wp-config.php <<EOL
     define( 'WPMDB_LICENCE', '$wpdbkey' );
 EOL
+
+# Update pro plugins
+wp plugin update --all
 
 echo -e "${green}* \n WP installing finished! \n "
 echo -e "Now you can login as user you have chosen. Have fun! \n ${white}"
