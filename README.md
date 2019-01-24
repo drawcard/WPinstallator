@@ -1,6 +1,6 @@
-# Install WordPress from the CLI
+# WP Now!
 
-Shell script to install the latest version of WordPress with WPCLI.
+Shell script to install the latest version of WordPress with WPCLI. Right now!
 
 ## Features (wp-cli required)
 - Creates MySQL database.
