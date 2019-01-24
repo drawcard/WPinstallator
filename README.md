@@ -1,7 +1,8 @@
 # WP Now!
 
 Shell script to install the latest version of WordPress with WPCLI. Right now!
-*This is heavily opinionated. Fork and edit to your needs.*
+
+**This is heavily opinionated. Fork and edit to your needs.**
 
 ## Features (wp-cli required)
 - Creates MySQL database.
