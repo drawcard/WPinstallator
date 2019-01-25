@@ -20,7 +20,7 @@ Shell script to install the latest version of WordPress with WPCLI. Right now!
 ```bash
 sudo apt install apg # installs Auto Password Generator dependency
 git clone https://github.com/drawcard/wpnow/ ~/.wpnow
-echo -e "\n alias installwp='bash ~/.wpnow/wpnow.sh' # WP Install script" >> ~/.bashrc
+echo -e "\n alias wpnow='bash ~/.wpnow/wpnow.sh' # WP Now! script" >> ~/.bashrc
 source ~/.bashrc
 # Navigate to the website folder you want to install and run installwp
 ```
