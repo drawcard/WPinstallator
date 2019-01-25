@@ -105,7 +105,7 @@ EOL
 wp rewrite structure '/%year%/%monthnum%/%postname%/' --hard
 wp rewrite flush --hard
 
-# install elementor (needed to set up pages below)
+# install Elementor (needed to set up maintenance page below)
 wp plugin install elementor --activate
 
 # Update WordPress options
@@ -138,10 +138,10 @@ wp option update default_pingback_flag '0'
 wp option update close_comments_for_old_posts '1'
 
     # Default pages
-wp post create --post_type=draft --post_title='Homepage' --post_content='Edit this page in Elementor to get started.' --post_status=publish
-wp post create --post_type=draft --post_title='About' --post_content='Edit this page in Elementor to get started.' --post_status=publish 
-wp post create --post_type=draft --post_title='Contact' --post_content='Edit this page in Elementor to get started.' --post_status=publish
-wp post create --post_type=draft --post_title='Terms and Conditions' --post_content='Edit this page in Elementor to get started.' --post_status=publish
+wp post create --post_type=page --post_title='Homepage' --post_content='Edit this page in Elementor to get started.' --post_status=private
+wp post create --post_type=page --post_title='About' --post_content='Edit this page in Elementor to get started.' --post_status=draft 
+wp post create --post_type=page --post_title='Contact' --post_content='Edit this page in Elementor to get started.' --post_status=draft
+wp post create --post_type=page --post_title='Terms and Conditions' --post_content='Edit this page in Elementor to get started.' --post_status=draft
 wp post create --post_type=elementor_library --post_title='Under Maintenance' --post_content='This website is under maintenace - please visit again soon.' --post_status=publish
 
     # Reading
