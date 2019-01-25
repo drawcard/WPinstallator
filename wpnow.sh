@@ -60,14 +60,18 @@ echo -e "${green}* MYSQL done :) \n ${white}*"
 
 echo "Running WP-CLI core config"
 wp core config --dbname=$dbname --dbuser=$dbuser --dbpass=$dbpass --extra-php <<PHP
+// Enable debugging - logged to wp-content/debug.log
 define( 'WP_DEBUG', true );
-// Force display of errors and warnings
-define( "WP_DEBUG_DISPLAY", true );
-@ini_set( "display_errors", 1 );
-// Save Queries - set this to true if this is required (may impact site performance)
+// Manage display of errors and warnings (true / false)
+define( "WP_DEBUG_DISPLAY", false );
+// Manage display of errors and warnings (PHP setting) (0 / 1)
+@ini_set( "display_errors", 0 );
+// Manage the storage of queries - this affects site performance (true / false) 
 define( "SAVEQUERIES", false );
-// Use dev versions of core JS and CSS files (set to true if you are modifying these core files)
+// Use dev versions of core JS and CSS files (true / false)
 define( "SCRIPT_DEBUG", false );
+// Unminify JS and CSS for extra debugging powers (true / false)
+define( 'CONCATENATE_SCRIPTS', false );
 PHP
 
 echo -e "${blue}Site URL (without https://):${white}"
@@ -182,6 +186,20 @@ EOL
 
 # Update pro plugins
 wp plugin update --all
+
+# Update .htaccess to prevent access to sensitive files
+cat >> .htaccess <<EOL
+    # Protect wp-config.php
+<Files "wp-config.php">
+    order allow,deny
+    deny from all
+</Files>
+    # Protect debug log
+<Files "debug.log">
+    order allow,deny
+    deny from all
+</Files>
+EOL
 
 echo -e "${green}* \n WP install finished! \n "
 echo -e "Here are the credentials you need. Please store these somewhere safe. \n "
