@@ -12,8 +12,8 @@ green="\033[32m"
 white="\033[37m"
 yellow="\033[33m"
 
-echo -e "To install in a subfolder, write the folder name.\n"
-echo -e "Otherwise leave empty to install in root:"
+echo -e "To install in a subfolder, write the folder name. eg ~/www/path/to/wp/ \n"
+echo -e "Otherwise hit Enter to install in the current directory:"
 read folder
 
 if [[ "$folder" != "" ]]; then
