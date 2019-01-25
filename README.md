@@ -7,18 +7,7 @@ Shell script to install the latest version of WordPress with WPCLI. Right now!
 ## Features (wp-cli & apg required)
 - Creates MySQL database.
 - Automatic installation of WordPress.
-- Write wpconfig with 
-```php
-define( 'WP_DEBUG', true );
-// Force display of errors and warnings
-define( "WP_DEBUG_DISPLAY", true );
-@ini_set( "display_errors", 1 );
-// Enable Save Queries
-define( "SAVEQUERIES", true );
-// Use dev versions of core JS and CSS files (only needed if you are modifying these core files)
-define( "SCRIPT_DEBUG", true ); 
-```
-
+- Write wpconfig with debugging features (switched off except for logging to wp-content/debug.log)
 - Add wp-cli.yml config.
 - Add rewrite structure
 - Update WordPress options
