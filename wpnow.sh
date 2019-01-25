@@ -105,6 +105,9 @@ EOL
 wp rewrite structure '/%year%/%monthnum%/%postname%/' --hard
 wp rewrite flush --hard
 
+# install elementor (needed to set up pages below)
+wp plugin install elementor --activate
+
 # Update WordPress options
 
     # General Setup
@@ -158,7 +161,7 @@ wp theme delete kubrick twentyten twentyeleven twentytwelve twentythirteen twent
 wp plugin delete akismet hello
 
 # add free plugins
-wp plugin install elementor wp-cerber 
+wp plugin install wp-cerber health-check
 
 # Grab 'pro' plugins from another directory and set up
 cp -r ~/wp-pro-plugins ./wp-content/wp-plugins
