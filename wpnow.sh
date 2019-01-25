@@ -26,16 +26,14 @@ echo "============================================"
 echo "WordPress Install Script"
 echo "============================================"
 
-echo -e "${blue}* Project name ${white}"
-read pname
-echo -e "${blue}* DB name ${white}"
+echo -e "${blue}* Please enter a unique database name, eg. 'wp_clientname': ${white}"
 read dbname
-echo -e "${blue}* DB user ${white}"
-read dbuser
-echo -e "${blue}* DB password ${white}"
-read dbpass
-echo -e "${blue}* Language (Australia: en_AU) ${white}"
-read lang
+# Take the DB name and generate a wp username from it
+dbuser=$(expr substr "${dbname}" 1 16) # Trim excess characters (no more than 16 allowed)
+echo -e "${blue}* DB user ${dbuser} has been generated from DB name.${white}"
+# Randomly generate a 12 character password
+dbpass=`date +%s | sha256sum | base64 | head -c 12`
+echo -e "${blue}* DB password ${dbpass} has been generated. ${white}"
 echo -e "${blue}Run install? (y/n) ${white}"
 read run
 
@@ -43,7 +41,8 @@ if [[ "$run" == n ]]; then
    exit
 fi
 
-wp core download --locale="$lang"
+# Set to Australian. Update for other countries.
+wp core download --locale="en_AU"
 
 echo "Creating MYSQL stuff. MySQL admin password required."
 
@@ -65,25 +64,25 @@ define( 'WP_DEBUG', true );
 // Force display of errors and warnings
 define( "WP_DEBUG_DISPLAY", true );
 @ini_set( "display_errors", 1 );
-// Enable Save Queries
-define( "SAVEQUERIES", true );
-// Use dev versions of core JS and CSS files (only needed if you are modifying these core files)
-define( "SCRIPT_DEBUG", true );
+// Save Queries - set this to true if this is required (may impact site performance)
+define( "SAVEQUERIES", false );
+// Use dev versions of core JS and CSS files (set to true if you are modifying these core files)
+define( "SCRIPT_DEBUG", false );
 PHP
 
-echo -e "${blue}Site URL (without http://):${white}"
+echo -e "${blue}Site URL (without https://):${white}"
 read siteurl
 
 echo -e "${blue}Site title:${white}"
 read sitetitle
 
-echo -e "${blue}WP-admin User:${white}"
+echo -e "${blue}WP Admin username:${white}"
 read adminuser
 
-echo -e "${blue}WP-admin Password:${white}"
-read adminpassword
+adminpassword=`date +%s | sha256sum | base64 | head -c 12`
+echo -e "${blue}Admin password '$adminpassword' has been generated. ${white}"
 
-echo -e "${blue}WP-admin Email:${white}"
+echo -e "${blue}WP Admin email:${white}"
 read adminemail
 
 echo -e "Running WP-CLI core install"
@@ -105,8 +104,8 @@ wp rewrite flush --hard
 # Update WordPress options
 
     # General Setup
-wp option update blogname '$pname'
-wp option update blogdescription 'Welcome to the website of $pname'
+wp option update blogname '$sitetitle'
+wp option update blogdescription 'Welcome to the website of $sitetitle'
 wp option update blog_public 'on' # set to off to disable search engine crawling
 wp option update admin_email '$adminemail'
 wp post delete $(wp post list --post_type='page' --format=ids) # remove 'hello world' page
@@ -133,10 +132,10 @@ wp option update default_pingback_flag '0'
 wp option update close_comments_for_old_posts '1'
 
     # Default pages
-wp post create --post_type=page --post_title='Homepage' --post_content='Edit this page in Elementor to get started.' --post_status=publish
-wp post create --post_type=page --post_title='About' --post_content='Edit this page in Elementor to get started.' --post_status=publish 
-wp post create --post_type=page --post_title='Contact' --post_content='Edit this page in Elementor to get started.' --post_status=publish
-wp post create --post_type=page --post_title='Terms and Conditions' --post_content='Edit this page in Elementor to get started.' --post_status=publish
+wp post create --post_type=draft --post_title='Homepage' --post_content='Edit this page in Elementor to get started.' --post_status=publish
+wp post create --post_type=draft --post_title='About' --post_content='Edit this page in Elementor to get started.' --post_status=publish 
+wp post create --post_type=draft --post_title='Contact' --post_content='Edit this page in Elementor to get started.' --post_status=publish
+wp post create --post_type=draft --post_title='Terms and Conditions' --post_content='Edit this page in Elementor to get started.' --post_status=publish
 wp post create --post_type=elementor_library --post_title='Under Maintenance' --post_content='This website is under maintenace - please visit again soon.' --post_status=publish
 
     # Reading
@@ -150,34 +149,22 @@ wp rewrite flush --hard
 wp theme install https://github.com/pojome/elementor-hello-theme/archive/master.zip --activate
 
 # remove other themes
-wp theme delete kubrick
-wp theme delete twentyten
-wp theme delete twentyeleven
-wp theme delete twentytwelve
-wp theme delete twentythirteen
-wp theme delete twentyfourteen
-wp theme delete twentyfifteen
-wp theme delete twentysixteen
-wp theme delete twentyseventeen
-wp theme delete twentyeighteen
-wp theme delete twentynineteen
-# future proofing
-wp theme delete twentytwenty
-wp theme delete twentytwentyone
-wp theme delete twentytwentytwo
+wp theme delete kubrick twentyten twentyeleven twentytwelve twentythirteen twentyfourteen twentyfifteen twentysixteen twentyseventeen twentyeighteen twentynineteen twentytwenty twentytwentyone twentytwentytwo twentytwentythree twentytwentyfour twentytwentyfive
 
 # delete OOTB plugins
 wp plugin delete akismet hello
 
-# add plugins
-wp plugin install elementor --activate
-wp plugin install wp-cerber --activate
+# add free plugins
+wp plugin install elementor wp-cerber 
 
 # Grab 'pro' plugins from another directory and set up
 cp -r ~/wp-pro-plugins ./wp-content/wp-plugins
 
+# Activate all plugins
+wp plugin activate --all
+
 # Activate Elementor Pro
-echo -e "${blue}* Please enter your Elementor Pro activation key  (or Enter key to dismiss)${white}"
+echo -e "${blue}* Please enter your Elementor Pro activation key (or Enter key to dismiss)${white}"
 read elemkey
 wp elementor-pro license activate $elemkey
 
@@ -196,5 +183,17 @@ EOL
 # Update pro plugins
 wp plugin update --all
 
-echo -e "${green}* \n WP installing finished! \n "
-echo -e "Now you can login as user you have chosen. Have fun! \n ${white}"
+echo -e "${green}* \n WP install finished! \n "
+echo -e "Here are the credentials you need. Please store these somewhere safe. \n "
+echo -e "${yellow}-------------------- \n"
+echo -e "~~ WP LOGIN \n"
+echo -e "Username: ${adminuser} \n"
+echo -e "Password: ${adminpassword} \n"
+echo -e "Admin email: ${adminemail} \n"
+echo -e "~~ DATABASE \n"
+echo -e "DB Name: ${dbname} \n"
+echo -e "DB User: ${dbuser} \n"
+echo -e "DB Pass: ${dbpass} \n"
+echo -e "-------------------- \n"
+
+echo -e "${green}You may now login at: ${siteurl}/wp-admin/ \n ${white}"
