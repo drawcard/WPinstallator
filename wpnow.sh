@@ -12,7 +12,7 @@ green="\033[32m"
 white="\033[37m"
 yellow="\033[33m"
 
-echo -e "To install in a subfolder, write the folder name. eg ~/www/path/to/wp/ \n"
+echo -e "To install in a subfolder, write the folder name. eg ~/www/path/to/wp/"
 echo -e "Otherwise hit Enter to install in the current directory:"
 read folder
 
@@ -203,19 +203,20 @@ cat >> .htaccess <<EOL
 </Files>
 EOL
 
-echo -e "${green}* \n WP install finished! \n "
+echo -e "${green}* \n WP install finished!"
 echo -e "Here are the credentials you need. Please store these somewhere safe. \n "
-echo -e "${yellow}-------------------- \n"
-echo -e "~~ WP LOGIN \n"
-echo -e "Username: ${adminuser} \n"
-echo -e "Password: ${adminpassword} \n"
-echo -e "Admin email: ${adminemail} \n"
+
+echo -e "${yellow}-------------------- "
+echo -e "~~ WP LOGIN "
+echo -e "Username: ${adminuser}"
+echo -e "Password: ${adminpassword}"
+echo -e "Admin email: ${adminemail}"
 echo -e "~~ DATABASE \n"
-echo -e "DB Name: ${dbname} \n"
-echo -e "DB User: ${dbuser} \n"
-echo -e "DB Pass: ${dbpass} \n"
+echo -e "DB Name: ${dbname}"
+echo -e "DB User: ${dbuser}"
+echo -e "DB Pass: ${dbpass}"
 echo -e "-------------------- \n"
 
-echo -e "${green}You may now login at: ${siteurl}/wp-admin/ \n ${white}"
+echo -e "${green}You may now login at: ${siteurl}/wp-admin/${white}"
 echo -e "${green}TIP: Run 'wp media regenerate' to apply preset dimensions to existing media files.\n ${white}"
 
