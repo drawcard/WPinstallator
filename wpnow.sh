@@ -164,14 +164,14 @@ wp plugin delete akismet hello
 wp plugin install wp-cerber health-check
 
 # Grab 'pro' plugins from another directory and set up
-cp -r ~/wp-pro-plugins ./wp-content/wp-plugins
+cp -r ~/wp-pro-plugins/* ./wp-content/wp-plugins
 
 # Activate all plugins
 wp plugin activate --all
 
 # Activate Elementor Pro
 echo -e "${blue}* Please enter your Elementor Pro activation key (or Enter key to dismiss)${white}"
-read elemkey
+read -s elemkey
 wp elementor-pro license activate $elemkey
 
 # Elementor options setting
@@ -181,7 +181,7 @@ wp option update elementor_maintenance_mode_mode 'coming_soon'
 
 # Activate WP DB Migrate Pro
 echo -e "${blue}* Please enter your WP DB Migrate Pro activation key (or Enter key to dismiss) ${white}"
-read wpdbkey
+read -s wpdbkey
 cat >> wp-config.php <<EOL
     define( 'WPMDB_LICENCE', '$wpdbkey' );
 EOL
