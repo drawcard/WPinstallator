@@ -124,7 +124,7 @@ wp option update medium_size_h '0'
 wp option update large_size_w '1600'
 wp option update large_size_h '0'
 wp option update image_default_size 'medium'
-image_default_align 'right'
+wp_option_update image_default_align 'right'
 wp media regenerate # regenerate any existing files
 
     # Comments
