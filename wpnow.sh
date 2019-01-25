@@ -32,7 +32,7 @@ read dbname
 dbuser=$(expr substr "${dbname}" 1 16) # Trim excess characters (no more than 16 allowed)
 echo -e "${blue}* DB user ${dbuser} has been generated from DB name.${white}"
 # Randomly generate a 12 character password
-dbpass=`date +%s | sha256sum | base64 | head -c 12`
+dbpass=`apg -a 1 -m 12 -n 1`
 echo -e "${blue}* DB password ${dbpass} has been generated. ${white}"
 echo -e "${blue}Run install? (y/n) ${white}"
 read run
@@ -83,7 +83,7 @@ read sitetitle
 echo -e "${blue}WP Admin username:${white}"
 read adminuser
 
-adminpassword=`date +%s | sha256sum | base64 | head -c 12`
+adminpassword=`apg -a 1 -m 12 -n 1`
 echo -e "${blue}Admin password '$adminpassword' has been generated. ${white}"
 
 echo -e "${blue}WP Admin email:${white}"
