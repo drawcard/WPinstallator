@@ -125,7 +125,6 @@ wp option update large_size_w '1600'
 wp option update large_size_h '0'
 wp option update image_default_size 'medium'
 wp_option_update image_default_align 'right'
-wp media regenerate # regenerate any existing files
 
     # Comments
 wp option update comment_moderation 'true'
@@ -215,3 +214,5 @@ echo -e "DB Pass: ${dbpass} \n"
 echo -e "-------------------- \n"
 
 echo -e "${green}You may now login at: ${siteurl}/wp-admin/ \n ${white}"
+echo -e "${green}TIP: Run 'wp media regenerate' to apply preset dimensions to existing media files.\n ${white}"
+
