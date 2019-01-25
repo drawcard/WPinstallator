@@ -111,8 +111,7 @@ wp plugin install elementor --activate
 # Update WordPress options
 
     # General Setup
-wp option update blogname '$sitetitle'
-wp option update blogdescription 'Welcome to the website of $sitetitle'
+wp option update blogdescription 'Welcome to our website'
 wp option update blog_public 'on' # set to off to disable search engine crawling
 wp option update admin_email '$adminemail'
 wp post delete $(wp post list --post_type='page' --format=ids) # remove 'hello world' page
