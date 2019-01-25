@@ -4,7 +4,7 @@ Shell script to install the latest version of WordPress with WPCLI. Right now!
 
 **This is heavily opinionated. Fork and edit to your needs.**
 
-## Features (wp-cli required)
+## Features (wp-cli & apg required)
 - Creates MySQL database.
 - Automatic installation of WordPress.
 - Write wpconfig with ``` define( 'WP_DEBUG', true );
@@ -24,9 +24,9 @@ define( "SCRIPT_DEBUG", true ); ```
 - Install Elementor Pro & WP DB Migrate Pro
 - Configure stuff for Elementor
 
-## Run the script
-
+## Setup
 ```bash
+sudo apt install apg # installs Auto Password Generator dependency
 git clone https://github.com/drawcard/wpnow/ ~/.wpnow
 echo -e "\n alias installwp='bash ~/.wpnow/wpnow.sh' # WP Install script" >> ~/.bashrc
 source ~/.bashrc
