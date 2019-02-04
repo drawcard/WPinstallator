@@ -138,14 +138,18 @@ wp option update close_comments_for_old_posts '1'
 
     # Default pages
 wp post create --post_type=page --post_title='Homepage' --post_content='Edit this page in Elementor to get started.' --post_status=private
-wp post create --post_type=page --post_title='About' --post_content='Edit this page in Elementor to get started.' --post_status=draft 
-wp post create --post_type=page --post_title='Contact' --post_content='Edit this page in Elementor to get started.' --post_status=draft
-wp post create --post_type=page --post_title='Terms and Conditions' --post_content='Edit this page in Elementor to get started.' --post_status=draft
+wp post create --post_type=page --post_title='About' --post_content='Edit this page in Elementor to get started.' --post_status=private 
+wp post create --post_type=page --post_title='Contact' --post_content='Edit this page in Elementor to get started.' --post_status=private
+wp post create --post_type=page --post_title='Terms and Conditions' --post_content='Edit this page in Elementor to get started.' --post_status=private
 wp post create --post_type=elementor_library --post_title='Under Maintenance' --post_content='This website is under maintenace - please visit again soon.' --post_status=publish
 
     # Reading
 wp option update page_on_front $(wp post list --post_type=page --pagename="homepage" --format=ids);
 wp option update show_on_front 'page'
+
+    # Elementor
+wp option update elementor_default_generic_fonts '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif'
+wp option update elementor_container_width '1200'
 
 # generate htaccess
 wp rewrite flush --hard
@@ -155,6 +159,16 @@ wp theme install https://github.com/pojome/elementor-hello-theme/archive/master.
 
 # remove other themes
 wp theme delete kubrick twentyten twentyeleven twentytwelve twentythirteen twentyfourteen twentyfifteen twentysixteen twentyseventeen twentyeighteen twentynineteen twentytwenty twentytwentyone twentytwentytwo twentytwentythree twentytwentyfour twentytwentyfive
+
+# Setup menu system
+wp menu create "Main Menu"
+wp menu location assign main-menu menu-1
+
+# Assign existing items to menu
+wp menu item add-post main-menu $(wp post list --post_type=page --pagename="homepage" --format=ids) --title="Home"
+wp menu item add-post main-menu $(wp post list --post_type=page --pagename="about" --format=ids)
+wp menu item add-post main-menu $(wp post list --post_type=page --pagename="contact" --format=ids)
+wp menu item add-post main-menu $(wp post list --post_type=page --pagename="terms-and-conditions" --format=ids) --parent-id=$(wp post list --post_type=page --pagename="about" --format=ids)
 
 # delete OOTB plugins
 wp plugin delete akismet hello
