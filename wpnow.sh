@@ -174,7 +174,7 @@ wp menu item add-post main-menu $(wp post list --post_type=page --pagename="term
 wp plugin delete akismet hello
 
 # add free plugins
-wp plugin install wp-cerber health-check
+wp plugin install wp-cerber wordpress-seo health-check query-monitor
 
 # Grab 'pro' plugins from another directory and set up
 cp -r ~/wp-pro-plugins/* ./wp-content/wp-plugins
