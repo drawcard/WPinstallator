@@ -22,6 +22,6 @@ sudo apt install apg # installs Auto Password Generator dependency
 git clone https://github.com/drawcard/wpnow/ ~/.wpnow
 echo -e "\n alias wpnow='bash ~/.wpnow/wpnow.sh' # WP Now! script" >> ~/.bashrc
 source ~/.bashrc
-# Navigate to the website folder you want to install and run installwp
+# Navigate to the website folder you want to install and run `wpnow`
 ```
 
