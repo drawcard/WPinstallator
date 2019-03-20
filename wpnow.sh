@@ -31,9 +31,9 @@ read dbname
 # Take the DB name and generate a wp username from it
 dbuser=$(expr substr "${dbname}" 1 16) # Trim excess characters (no more than 16 allowed)
 echo -e "${blue}* DB user ${dbuser} has been generated from DB name.${white}"
-# Randomly generate a 12 character password
+
 echo -e "${yellow}Generating password... (this may take some time)${white}"
-dbpass=`apg -a 1 -m 14 -n 1 -c cl_seed -E 0Ol1iI8B3vu\`\~\!\{\}\[\]\(\)\<\>\,\.\\\/\|\?\;\:\'\"`
+dbpass=`apg -a 1 -m 14 -n 1 -c cl_seed -M SNCL`
 echo -e "${blue}* DB password ${dbpass} has been generated. ${white}"
 echo -e "${blue}Run install? (y/n) ${white}"
 read run
