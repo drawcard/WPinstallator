@@ -45,22 +45,22 @@ fi
 # Set to Australian. Update for other countries.
 wp core download --locale="en_AU"
 
-echo "Creating MYSQL stuff. MySQL admin password required."
+echo "${yellow}Creating MYSQL stuff. MySQL admin password required.${white}"
 
 MYSQL=`which mysql`
 
-Q1="CREATE DATABASE IF NOT EXISTS $dbname;"
-Q2="GRANT USAGE ON *.* TO $dbuser@localhost IDENTIFIED BY '$dbpass';"
-Q3="GRANT ALL PRIVILEGES ON $dbname.* TO $dbuser@localhost;"
+Q1="CREATE DATABASE IF NOT EXISTS ${dbname};"
+Q2="GRANT USAGE ON *.* TO ${dbuser}@localhost IDENTIFIED BY '${dbpass}';"
+Q3="GRANT ALL PRIVILEGES ON ${dbname}.* TO ${dbuser}@localhost;"
 Q4="FLUSH PRIVILEGES;"
 
 SQL="${Q1}${Q2}${Q3}${Q4}"
 $MYSQL -uroot -p -e "$SQL"
 
-echo -e "${green}* MYSQL done :) \n ${white}*"
+echo -e "${green}* MYSQL setup is complete \n ${white}*"
 
 echo "Running WP-CLI core config"
-wp core config --dbname=$dbname --dbuser=$dbuser --dbpass=$dbpass --extra-php <<PHP
+wp core config --dbname=${dbname} --dbuser=${dbuser} --dbpass=${dbpass} --extra-php <<PHP
 // Enable debugging - logged to wp-content/debug.log
 define( 'WP_DEBUG', true );
 // Manage display of errors and warnings (true / false)
@@ -92,7 +92,7 @@ echo -e "${blue}WP Admin email:${white}"
 read adminemail
 
 echo -e "Running WP-CLI core install"
-wp core install --url="http://$siteurl" --title="$sitetitle" --admin_user="$adminuser" --admin_password="$adminpassword" --admin_email="$adminemail"
+wp core install --url="http://${siteurl}" --title="${sitetitle}" --admin_user="${adminuser}" --admin_password="${adminpassword}" --admin_email="${adminemail}"
 
 echo -e "${green}* WP core install done :) \n ${white}*"
 
@@ -189,7 +189,7 @@ wp plugin activate --all
 # Activate Elementor Pro
 echo -e "${blue}* Please enter your Elementor Pro activation key (or Enter key to dismiss)${white}"
 read -s elemkey
-wp elementor-pro license activate $elemkey
+wp elementor-pro license activate ${elemkey}
 
 # Elementor options setting
 wp option update elementor_maintenance_mode_exclude_mode 'logged_in'
@@ -200,7 +200,7 @@ wp option update elementor_maintenance_mode_mode 'coming_soon'
 echo -e "${blue}* Please enter your WP DB Migrate Pro activation key (or Enter key to dismiss) ${white}"
 read -s wpdbkey
 cat >> wp-config.php <<EOL
-    define( 'WPMDB_LICENCE', '$wpdbkey' );
+    define( 'WPMDB_LICENCE', '${wpdbkey}' );
 EOL
 
 # Update pro plugins
