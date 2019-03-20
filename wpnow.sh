@@ -118,15 +118,15 @@ wp post delete $(wp post list --post_type='page' --format=ids) # remove 'hello w
 wp post delete $(wp post list --post_type='post' --format=ids) # remove 'hello world' post
 
     # Media
-wp option update thumbnail_size_w '400'
 wp option update thumbnail_size_h '400'
+wp option update thumbnail_size_w '400'
 wp option update thumbnail_crop '0'
-wp option update medium_size_w '800'
 wp option update medium_size_h '0'
-wp option update medium_large_size_w '1200'
+wp option update medium_size_w '800'
 wp option update medium_large_size_h '0'
-wp option update large_size_w '1600'
+wp option update medium_large_size_w '1200'
 wp option update large_size_h '0'
+wp option update large_size_w '1600'
 wp option update image_default_size 'medium'
 wp_option_update image_default_align 'right'
 
