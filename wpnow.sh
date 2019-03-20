@@ -112,14 +112,14 @@ wp plugin install elementor --activate
 
 # Update WordPress options
 
-    # General Setup
+echo -e "${green}* Wordpress Setup Tasks ${white}"
+
+echo -e "${yellow}Set up the basics...${white}"
 wp option update blogdescription 'Welcome to our website'
 wp option update blog_public 'on' # set to off to disable search engine crawling
 wp option update admin_email '$adminemail'
-wp post delete $(wp post list --post_type='page' --format=ids) # remove 'hello world' page
-wp post delete $(wp post list --post_type='post' --format=ids) # remove 'hello world' post
 
-    # Media
+echo -e "${yellow}Set up image sizes...${white}"
 wp option update thumbnail_size_h '400'
 wp option update thumbnail_size_w '400'
 wp option update thumbnail_crop '0'
@@ -132,7 +132,7 @@ wp option update large_size_w '1600'
 wp option update image_default_size 'medium'
 wp_option_update image_default_align 'right'
 
-    # Comments
+echo -e "${yellow}Configure comment settings...${white}"
 wp option update comment_moderation 'true'
 wp option update default_comment_status 'closed'
 wp option update comments_notify '1'
@@ -140,73 +140,75 @@ wp option update default_ping_status 'closed'
 wp option update default_pingback_flag '0'
 wp option update close_comments_for_old_posts '1'
 
-    # Default pages
+echo -e "${yellow}Remove default pages...${white}"
+wp post delete $(wp post list --post_type='page' --format=ids) # remove 'hello world' page
+wp post delete $(wp post list --post_type='post' --format=ids) # remove 'hello world' post
 wp post create --post_type=page --post_title='Homepage' --post_content='Edit this page in Elementor to get started.' --post_status=private
 wp post create --post_type=page --post_title='About' --post_content='Edit this page in Elementor to get started.' --post_status=private 
 wp post create --post_type=page --post_title='Contact' --post_content='Edit this page in Elementor to get started.' --post_status=private
 wp post create --post_type=page --post_title='Terms and Conditions' --post_content='Edit this page in Elementor to get started.' --post_status=private
 wp post create --post_type=elementor_library --post_title='Under Maintenance' --post_content='This website is under maintenace - please visit again soon.' --post_status=publish
 
-    # Reading
+echo -e "${yellow}Update homepage settings...${white}"
 wp option update page_on_front $(wp post list --post_type=page --pagename="homepage" --format=ids);
 wp option update show_on_front 'page'
 
-    # Elementor
+echo -e "${yellow}Update Elementor settings...${white}"
 wp option update elementor_default_generic_fonts '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif'
 wp option update elementor_container_width '1200'
 
-# generate htaccess
+echo -e "${yellow}Flush permalinks...${white}"
 wp rewrite flush --hard
 
-# setup elementor hello theme
+echo -e "${yellow}Setup Elementor Hello base template...${white}"
 wp theme install https://github.com/pojome/elementor-hello-theme/archive/master.zip --activate
 
-# remove other themes
+echo -e "${yellow}Remove useless themes...${white}"
 wp theme delete kubrick twentyten twentyeleven twentytwelve twentythirteen twentyfourteen twentyfifteen twentysixteen twentyseventeen twentyeighteen twentynineteen twentytwenty twentytwentyone twentytwentytwo twentytwentythree twentytwentyfour twentytwentyfive
 
-# Setup menu system
+echo -e "${yellow}Setup menu system...${white}"
 wp menu create "Main Menu"
 wp menu location assign main-menu menu-1
 
-# Assign existing items to menu
+echo -e "${yellow}Add menu items...${white}"
 wp menu item add-post main-menu $(wp post list --post_type=page --pagename="homepage" --format=ids) --title="Home"
 wp menu item add-post main-menu $(wp post list --post_type=page --pagename="about" --format=ids)
 wp menu item add-post main-menu $(wp post list --post_type=page --pagename="contact" --format=ids)
 wp menu item add-post main-menu $(wp post list --post_type=page --pagename="terms-and-conditions" --format=ids) --parent-id=$(wp post list --post_type=page --pagename="about" --format=ids)
 
-# delete OOTB plugins
+echo -e "${yellow}Remove useless plugins...${white}"
 wp plugin delete akismet hello
 
-# add free plugins
+echo -e "${yellow}Add useful plugins...${white}"
 wp plugin install wp-cerber wordpress-seo health-check query-monitor
 
-# Grab 'pro' plugins from another directory and set up
+echo -e "${yellow}Add Pro plugins...${white}"
 cp -r ~/wp-pro-plugins/* ./wp-content/wp-plugins
 
-# Activate all plugins
+echo -e "${yellow}Activate plugins...${white}"
 wp plugin activate --all
 
-# Activate Elementor Pro
+echo -e "${yellow}Licence Elementor Pro...${white}"
 echo -e "${blue}* Please enter your Elementor Pro activation key (or Enter key to dismiss)${white}"
 read -s elemkey
 wp elementor-pro license activate ${elemkey}
 
-# Elementor options setting
+echo -e "${yellow}Turn on 'Maintenance Mode'...${white}"
 wp option update elementor_maintenance_mode_exclude_mode 'logged_in'
 wp option update elementor_maintenance_mode_template_id $(wp post list --post_type="elementor_library" --format=ids);
 wp option update elementor_maintenance_mode_mode 'coming_soon'
 
-# Activate WP DB Migrate Pro
+echo -e "${yellow}Licence WP DB Migrate Pro...${white}"
 echo -e "${blue}* Please enter your WP DB Migrate Pro activation key (or Enter key to dismiss) ${white}"
 read -s wpdbkey
 cat >> wp-config.php <<EOL
     define( 'WPMDB_LICENCE', '${wpdbkey}' );
 EOL
 
-# Update pro plugins
+echo -e "${yellow}Update all plugins...${white}"
 wp plugin update --all
 
-# Update .htaccess to prevent access to sensitive files
+echo -e "${yellow}Set .htaccess to protect sensitive files...${white}"
 cat >> .htaccess <<EOL
     # Protect wp-config.php
 <Files "wp-config.php">
@@ -220,7 +222,7 @@ cat >> .htaccess <<EOL
 </Files>
 EOL
 
-echo -e "${green}* \n WP install finished!"
+echo -e "${green}* \n The install process is complete!"
 echo -e "Here are the credentials you need. Please store these somewhere safe. \n "
 
 echo -e "${yellow}-------------------- "
