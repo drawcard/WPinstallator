@@ -5,12 +5,15 @@
 # Check wp-cli installed
 type wp >/dev/null 2>&1 || { echo >&2 "This script requires wp-cli but it's not installed.  Aborting."; exit 1; }
 
-# colors
-blue="\033[34m"
-red="\033[1;31m"
-green="\033[32m"
-white="\033[37m"
-yellow="\033[33m"
+# Colors: https://gist.github.com/vratiu/9780109
+black="\[\033[0;30m\]"        # Black
+red="\[\033[0;31m\]"          # Red
+green="\[\033[0;32m\]"        # Green
+yellow="\[\033[0;33m\]"       # Yellow
+blue="\[\033[0;34m\]"         # Blue
+purple="\[\033[0;35m\]"       # Purple
+cyan="\[\033[0;36m\]"         # Cyan
+white="\[\033[0;37m\]"        # White
 
 echo -e "To install in a subfolder, write the folder name. eg ~/www/path/to/wp/"
 echo -e "Otherwise hit Enter to install in the current directory:"
