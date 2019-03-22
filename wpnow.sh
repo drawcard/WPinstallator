@@ -2,8 +2,9 @@
 
 # install https://gist.github.com/xavierartot/61f7e6d7ab1e6318a1d0
 
-# Check wp-cli installed
-type wp >/dev/null 2>&1 || { echo >&2 "This script requires wp-cli but it's not installed.  Aborting."; exit 1; }
+# Check for missing dependencies
+type wp >/dev/null 2>&1 || { echo >&2 "ERROR: This script requires wp-cli but it's not installed. Please visit https://make.wordpress.org/cli/handbook/installing/ and follow the installation instructions, then re-run this script."; exit 1; }
+type apg >/dev/null 2>&1 || { echo >&2 "ERROR: This script requires apg but it's not installed. Run 'sudo apt-get install apg' to install and then re-run this script. Aborting."; exit 1; }
 
 # Colors: https://gist.github.com/vratiu/9780109
 black="\[\033[0;30m\]"        # Black
@@ -48,7 +49,7 @@ fi
 # Set to Australian. Update for other countries.
 wp core download --locale="en_AU"
 
-echo "*** /!\ Please enter your MySQL Admin Password."
+echo "*** Please enter your MySQL Admin Password."
 MYSQL=`which mysql`
 
 Q1="CREATE DATABASE IF NOT EXISTS ${dbname};"
