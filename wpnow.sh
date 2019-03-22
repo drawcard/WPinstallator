@@ -45,8 +45,7 @@ fi
 # Set to Australian. Update for other countries.
 wp core download --locale="en_AU"
 
-echo "${yellow}Creating MYSQL stuff. MySQL admin password required.${white}"
-
+echo "*** /!\ Please enter your MySQL Admin Password."
 MYSQL=`which mysql`
 
 Q1="CREATE DATABASE IF NOT EXISTS ${dbname};"
@@ -57,7 +56,7 @@ Q4="FLUSH PRIVILEGES;"
 SQL="${Q1}${Q2}${Q3}${Q4}"
 $MYSQL -uroot -p -e "$SQL"
 
-echo -e "${green}* MYSQL setup is complete \n ${white}*"
+echo -e "${yellow}* MYSQL setup is complete. ${white}*"
 
 echo "Running WP-CLI core config"
 wp core config --dbname=${dbname} --dbuser=${dbuser} --dbpass=${dbpass} --extra-php <<PHP
@@ -91,11 +90,8 @@ echo -e "${blue}Admin password '$adminpassword' has been generated. ${white}"
 echo -e "${blue}WP Admin email:${white}"
 read adminemail
 
-echo -e "Running WP-CLI core install"
+echo -e "${yellow}* Installing Wordpress... \n ${white}*"
 wp core install --url="http://${siteurl}" --title="${sitetitle}" --admin_user="${adminuser}" --admin_password="${adminpassword}" --admin_email="${adminemail}"
-
-echo -e "${green}* WP core install done :) \n ${white}*"
-
 
 echo -e "Write wpcli config. \n"
 cat >> wp-cli.yml <<EOL
