@@ -312,9 +312,9 @@ sleep 1
 
 echo -e "${yellow}Add plugin...${nc}"
 sleep 1
-cp -r ~/.wp-pro-plugins/elementor-pro ./wp-content/wp-plugins
+cp -r ~/.wp-pro-plugins/elementor-pro/ ./wp-content/plugins/
 
-echo -e "${yellow}Activate plugin...${nc}"
+echo -e "${yellow}Activate & update plugin...${nc}"
 sleep 1
 wp plugin activate elementor-pro 
 wp plugin update elementor-pro
@@ -356,11 +356,14 @@ echo "=================================="
 sleep 1
 
 echo -e "${yellow}Add plugin...${nc}"
-cp -r ~/.wp-pro-plugins/wp-migrate-db-pro* ./wp-content/wp-plugins
+cp -r ~/.wp-pro-plugins/wp-migrate-* ./wp-content/plugins/
 
-echo -e "${yellow}Activate plugin...${nc}"
-wp plugin activate wp-migrate-db-pro wp-migrate-db-pro-cli wp-migrate-db-pro-media-files wp-migrate-db-pro-multisite-tools wp-migrate-db-pro-theme-plugin-files wp-migrate-db-pro-compatibility 
-wp plugin update wp-migrate-db-pro wp-migrate-db-pro-cli wp-migrate-db-pro-media-files wp-migrate-db-pro-multisite-tools wp-migrate-db-pro-theme-plugin-files wp-migrate-db-pro-compatibility
+# Activate all plugin folders starting with wp-migrate-*
+
+
+echo -e "${yellow}Activate & update plugin...${nc}"
+for i in $(ls -d wp-migrate-*); do wp plugin activate ${i%%/}; done
+for i in $(ls -d wp-migrate-*); do wp plugin update ${i%%/}; done
 
 echo -e "${yellow}Licence WP DB Migrate Pro...${nc}"
 echo -e "${blue}* Please enter your WP DB Migrate Pro activation key: ${nc}"
