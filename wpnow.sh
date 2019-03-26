@@ -22,7 +22,7 @@ tick="\xE2\x9C\x94"
 
 # Exit notices
 function exit_report {
-echo -e "${green}${tick}* \n The install process is complete!"
+echo -e "${green}${tick} The install process is complete!"
 echo -e "Here are the credentials you need. Please store these somewhere safe. \n "
 
 echo -e "${yellow}-------------------- "
@@ -36,7 +36,7 @@ echo -e "DB User: ${dbuser}"
 echo -e "DB Pass: ${dbpass}"
 echo -e "-------------------- \n"
 
-echo -e "${green}${tick} You may now login at: ${siteurl}/wp-admin/${white}"
+echo -e "${purple} You may now login at: ${siteurl}/wp-admin/${white}"
 echo -e "${yellow}TIP: Run 'wp media regenerate' to apply preset dimensions to existing media files.\n ${white}"
 }
 
@@ -111,7 +111,7 @@ echo -e "${yellow}Installing Wordpress & configuring wp-config.php ... \n ${rese
 wp core install --url="http://${siteurl}" --title="${sitetitle}" --admin_user="${adminuser}" --admin_password="${adminpassword}" --admin_email="${adminemail}"
 
 echo -e "${yellow}Enabling debug & development settings in wp-config.php ... \n ${reset}"
-wp core config --dbname=${dbname} --dbuser=${dbuser} --dbpass=${dbpass} --extra-php <<PHP
+wp config create --dbname=${dbname} --dbuser=${dbuser} --dbpass=${dbpass} --extra-php <<PHP
 
 // Debugging and development settings - review these settings before publishing to production.
 
