@@ -62,7 +62,7 @@ dbuser=$(expr substr "${dbname}" 1 16) # Trim excess characters (no more than 16
 echo -e "${green}${tick} Database name generated.${reset}"
 
 echo -e "${yellow}Generating password (this may take some time)...${reset}"
-dbpass=`apg -a 1 -m 14 -n 1 -c cl_seed -M SNCL`
+dbpass=`apg -a 1 -m 14 -n 1 -c cl_seed -M SNCL -E 0Ol1iI8B3vu\`\~\!\{\}\[\]\(\)\<\>\,\.\\\/\|\?\;\:\'\"\+\%`
 echo -e "${green}${tick} Database password has been generated.${reset}"
 
 echo -e "${yellow}You will now be asked for your MySQL admin password to begin setting up the database. Continue? (Y/n)${reset}"
