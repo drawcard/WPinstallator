@@ -6,15 +6,39 @@
 type wp >/dev/null 2>&1 || { echo >&2 "ERROR: This script requires wp-cli but it's not installed. Please visit https://make.wordpress.org/cli/handbook/installing/ and follow the installation instructions, then re-run this script."; exit 1; }
 type apg >/dev/null 2>&1 || { echo >&2 "ERROR: This script requires apg but it's not installed. Run 'sudo apt-get install apg' to install and then re-run this script. Aborting."; exit 1; }
 
-# Colors: https://gist.github.com/vratiu/9780109
-black="[033[0;30m]"        # Black
-red="[033[0;31m]"          # Red
-green="[033[0;32m]"        # Green
-yellow="[033[0;33m]"       # Yellow
-blue="[033[0;34m]"         # Blue
-purple="[033[0;35m]"       # Purple
-cyan="[033[0;36m]"         # Cyan
-white="[033[0;37m]"        # White
+# Colours: https://stackoverflow.com/a/28938235
+black="\033[0;30m"        # Black
+red="\033[0;31m"          # Red
+green="\033[0;32m"        # Green
+yellow="\033[0;33m"       # Yellow
+blue="\033[0;34m"         # Blue
+purple="\033[0;35m"       # Purple
+cyan="\033[0;36m"         # Cyan
+white="\033[0;37m"        # White
+reset="\033[0m"           # Colour off
+
+# Symbols
+tick="\xE2\x9C\x94"
+
+# Exit notices
+function exit_report {
+echo -e "${green}${tick}* \n The install process is complete!"
+echo -e "Here are the credentials you need. Please store these somewhere safe. \n "
+
+echo -e "${yellow}-------------------- "
+echo -e "~~ WP LOGIN "
+echo -e "Username: ${adminuser}"
+echo -e "Password: ${adminpassword}"
+echo -e "Admin email: ${adminemail}"
+echo -e "~~ DATABASE \n"
+echo -e "DB Name: ${dbname}"
+echo -e "DB User: ${dbuser}"
+echo -e "DB Pass: ${dbpass}"
+echo -e "-------------------- \n"
+
+echo -e "${green}${tick} You may now login at: ${siteurl}/wp-admin/${white}"
+echo -e "${yellow}TIP: Run 'wp media regenerate' to apply preset dimensions to existing media files.\n ${white}"
+}
 
 echo -e "To install in a subfolder, write the folder name. eg ~/www/path/to/wp/"
 echo -e "Otherwise hit Enter to install in the current directory:"
@@ -26,30 +50,29 @@ else
     path_arg=""
 fi
 
-echo "============================================"
-echo "WordPress Install Script"
-echo "============================================"
+echo "${yellow}"
+echo "======================="
+echo "WP Now - Database Setup"
+echo "======================="
+sleep 1
 
-echo -e "${blue}* Please enter a unique database name, eg. 'wp_clientname': ${white}"
+echo -e "${yellow}Please enter a unique database name, eg. 'wp_clientname' (max 16 chars):${reset}"
 read dbname
 # Take the DB name and generate a wp username from it
 dbuser=$(expr substr "${dbname}" 1 16) # Trim excess characters (no more than 16 allowed)
-echo -e "${blue}* DB user ${dbuser} has been generated from DB name.${white}"
+echo -e "${green}${tick} Database name generated.${reset}"
 
-echo -e "${yellow}Generating password... (this may take some time)${white}"
+echo -e "${yellow}Generating password (this may take some time)...${reset}"
 dbpass=`apg -a 1 -m 14 -n 1 -c cl_seed -M SNCL`
-echo -e "${blue}* DB password ${dbpass} has been generated. ${white}"
-echo -e "${blue}Run install? (y/n) ${white}"
+echo -e "${green}${tick} Database password has been generated.${reset}"
+
+echo -e "${yellow}You will now be asked for your MySQL admin password to begin setting up the database. Continue? (Y/n)${reset}"
 read run
 
 if [[ "$run" == n ]]; then
    exit
 fi
 
-# Set to Australian. Update for other countries.
-wp core download --locale="en_AU"
-
-echo "*** Please enter your MySQL Admin Password."
 MYSQL=`which mysql`
 
 Q1="CREATE DATABASE IF NOT EXISTS ${dbname};"
@@ -60,10 +83,40 @@ Q4="FLUSH PRIVILEGES;"
 SQL="${Q1}${Q2}${Q3}${Q4}"
 $MYSQL -uroot -p -e "$SQL"
 
-echo -e "${yellow}* MYSQL setup is complete. ${white}*"
+echo "${yellow}"
+echo "=================="
+echo "WP Now - CMS Setup"
+echo "=================="
+echo "${reset}"
+sleep 1
 
-echo "Running WP-CLI core config"
+# Set to Australian. Update for other countries.
+wp core download --locale="en_AU"
+
+echo -e "${yellow}Site URL (without https://):${reset}"
+read siteurl
+
+echo -e "${yellow}Site title:${reset}"
+read sitetitle
+
+echo -e "${yellow}WP Admin username:${reset}"
+read adminuser
+
+echo -e "${yellow}Generating password... (this may take some time)${reset}"
+adminpassword=`apg -a 1 -m 14 -n 1 -c cl_seed -E 0Ol1iI8B3vu\`\~\!\{\}\[\]\(\)\<\>\,\.\\\/\|\?\;\:\'\"`
+echo -e "${green}${tick} Admin password '$adminpassword' has been generated. ${reset}"
+
+echo -e "${yellow}WP Admin email:${reset}"
+read adminemail
+
+echo -e "${yellow}Installing Wordpress & configuring wp-config.php ... \n ${reset}"
+wp core install --url="http://${siteurl}" --title="${sitetitle}" --admin_user="${adminuser}" --admin_password="${adminpassword}" --admin_email="${adminemail}"
+
+echo -e "${yellow}Enabling debug & development settings in wp-config.php ... \n ${reset}"
 wp core config --dbname=${dbname} --dbuser=${dbuser} --dbpass=${dbpass} --extra-php <<PHP
+
+// Debugging and development settings - review these settings before publishing to production.
+
 // Enable debugging - logged to wp-content/debug.log
 define( 'WP_DEBUG', true );
 // Manage display of errors and warnings (true / false)
@@ -77,136 +130,6 @@ define( "SCRIPT_DEBUG", false );
 // Unminify JS and CSS for extra debugging powers (true / false)
 define( 'CONCATENATE_SCRIPTS', false );
 PHP
-
-echo -e "${blue}Site URL (without https://):${white}"
-read siteurl
-
-echo -e "${blue}Site title:${white}"
-read sitetitle
-
-echo -e "${blue}WP Admin username:${white}"
-read adminuser
-
-echo -e "${yellow}Generating password... (this may take some time)${white}"
-adminpassword=`apg -a 1 -m 14 -n 1 -c cl_seed -E 0Ol1iI8B3vu\`\~\!\{\}\[\]\(\)\<\>\,\.\\\/\|\?\;\:\'\"`
-echo -e "${blue}Admin password '$adminpassword' has been generated. ${white}"
-
-echo -e "${blue}WP Admin email:${white}"
-read adminemail
-
-echo -e "${yellow}* Installing Wordpress... \n ${white}*"
-wp core install --url="http://${siteurl}" --title="${sitetitle}" --admin_user="${adminuser}" --admin_password="${adminpassword}" --admin_email="${adminemail}"
-
-echo -e "Write wpcli config. \n"
-cat >> wp-cli.yml <<EOL
-apache_modules:
-   - mod_rewrite
-EOL
-
-# set pretty urls
-wp rewrite structure '/%year%/%monthnum%/%postname%/' --hard
-wp rewrite flush --hard
-
-# install Elementor (needed to set up maintenance page below)
-wp plugin install elementor --activate
-
-# Update WordPress options
-
-echo -e "${green}* Wordpress Setup Tasks ${white}"
-
-echo -e "${yellow}Set up the basics...${white}"
-wp option update blogdescription 'Welcome to our website'
-wp option update blog_public 'on' # set to off to disable search engine crawling
-wp option update admin_email '$adminemail'
-
-echo -e "${yellow}Set up image sizes...${white}"
-wp option update thumbnail_size_h '400'
-wp option update thumbnail_size_w '400'
-wp option update thumbnail_crop '0'
-wp option update medium_size_h '0'
-wp option update medium_size_w '800'
-wp option update medium_large_size_h '0'
-wp option update medium_large_size_w '1200'
-wp option update large_size_h '0'
-wp option update large_size_w '1600'
-wp option update image_default_size 'medium'
-wp_option_update image_default_align 'right'
-
-echo -e "${yellow}Configure comment settings...${white}"
-wp option update comment_moderation 'true'
-wp option update default_comment_status 'closed'
-wp option update comments_notify '1'
-wp option update default_ping_status 'closed' 
-wp option update default_pingback_flag '0'
-wp option update close_comments_for_old_posts '1'
-
-echo -e "${yellow}Remove default pages...${white}"
-wp post delete $(wp post list --post_type='page' --format=ids) # remove 'hello world' page
-wp post delete $(wp post list --post_type='post' --format=ids) # remove 'hello world' post
-wp post create --post_type=page --post_title='Homepage' --post_content='Edit this page in Elementor to get started.' --post_status=private
-wp post create --post_type=page --post_title='About' --post_content='Edit this page in Elementor to get started.' --post_status=private 
-wp post create --post_type=page --post_title='Contact' --post_content='Edit this page in Elementor to get started.' --post_status=private
-wp post create --post_type=page --post_title='Terms and Conditions' --post_content='Edit this page in Elementor to get started.' --post_status=private
-wp post create --post_type=elementor_library --post_title='Under Maintenance' --post_content='This website is under maintenace - please visit again soon.' --post_status=publish
-
-echo -e "${yellow}Update homepage settings...${white}"
-wp option update page_on_front $(wp post list --post_type=page --pagename="homepage" --format=ids);
-wp option update show_on_front 'page'
-
-echo -e "${yellow}Update Elementor settings...${white}"
-wp option update elementor_default_generic_fonts '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif'
-wp option update elementor_container_width '1200'
-
-echo -e "${yellow}Flush permalinks...${white}"
-wp rewrite flush --hard
-
-echo -e "${yellow}Setup Elementor Hello base template...${white}"
-wp theme install https://github.com/pojome/elementor-hello-theme/archive/master.zip --activate
-
-echo -e "${yellow}Remove useless themes...${white}"
-wp theme delete kubrick twentyten twentyeleven twentytwelve twentythirteen twentyfourteen twentyfifteen twentysixteen twentyseventeen twentyeighteen twentynineteen twentytwenty twentytwentyone twentytwentytwo twentytwentythree twentytwentyfour twentytwentyfive
-
-echo -e "${yellow}Setup menu system...${white}"
-wp menu create "Main Menu"
-wp menu location assign main-menu menu-1
-
-echo -e "${yellow}Add menu items...${white}"
-wp menu item add-post main-menu $(wp post list --post_type=page --pagename="homepage" --format=ids) --title="Home"
-wp menu item add-post main-menu $(wp post list --post_type=page --pagename="about" --format=ids)
-wp menu item add-post main-menu $(wp post list --post_type=page --pagename="contact" --format=ids)
-wp menu item add-post main-menu $(wp post list --post_type=page --pagename="terms-and-conditions" --format=ids) --parent-id=$(wp post list --post_type=page --pagename="about" --format=ids)
-
-echo -e "${yellow}Remove useless plugins...${white}"
-wp plugin delete akismet hello
-
-echo -e "${yellow}Add useful plugins...${white}"
-wp plugin install wp-cerber wordpress-seo health-check query-monitor
-
-echo -e "${yellow}Add Pro plugins...${white}"
-cp -r ~/wp-pro-plugins/* ./wp-content/wp-plugins
-
-echo -e "${yellow}Activate plugins...${white}"
-wp plugin activate --all
-
-echo -e "${yellow}Licence Elementor Pro...${white}"
-echo -e "${blue}* Please enter your Elementor Pro activation key (or Enter key to dismiss)${white}"
-read -s elemkey
-wp elementor-pro license activate ${elemkey}
-
-echo -e "${yellow}Turn on 'Maintenance Mode'...${white}"
-wp option update elementor_maintenance_mode_exclude_mode 'logged_in'
-wp option update elementor_maintenance_mode_template_id $(wp post list --post_type="elementor_library" --format=ids);
-wp option update elementor_maintenance_mode_mode 'coming_soon'
-
-echo -e "${yellow}Licence WP DB Migrate Pro...${white}"
-echo -e "${blue}* Please enter your WP DB Migrate Pro activation key (or Enter key to dismiss) ${white}"
-read -s wpdbkey
-cat >> wp-config.php <<EOL
-    define( 'WPMDB_LICENCE', '${wpdbkey}' );
-EOL
-
-echo -e "${yellow}Update all plugins...${white}"
-wp plugin update --all
 
 echo -e "${yellow}Set .htaccess to protect sensitive files...${white}"
 cat >> .htaccess <<EOL
@@ -222,20 +145,247 @@ cat >> .htaccess <<EOL
 </Files>
 EOL
 
-echo -e "${green}* \n The install process is complete!"
-echo -e "Here are the credentials you need. Please store these somewhere safe. \n "
+echo -e "${yellow}Writing wp-cli.yml config...${reset}"
+cat >> wp-cli.yml <<EOL
+apache_modules:
+   - mod_rewrite
+EOL
 
-echo -e "${yellow}-------------------- "
-echo -e "~~ WP LOGIN "
-echo -e "Username: ${adminuser}"
-echo -e "Password: ${adminpassword}"
-echo -e "Admin email: ${adminemail}"
-echo -e "~~ DATABASE \n"
-echo -e "DB Name: ${dbname}"
-echo -e "DB User: ${dbuser}"
-echo -e "DB Pass: ${dbpass}"
-echo -e "-------------------- \n"
+echo -e "${green}${tick}WordPress CMS has been successfully installed. ${reset}"
+sleep 2
 
-echo -e "${green}You may now login at: ${siteurl}/wp-admin/${white}"
-echo -e "${green}TIP: Run 'wp media regenerate' to apply preset dimensions to existing media files.\n ${white}"
+echo -e "${yellow}Would you like to run additional custom configurations, plugins, themes? \n
+Consult README.md for more information on what's installed and configured. \n
+Also read the script to see these options in detail. \n
+Otherwise, type 'n' if you'd like to have a blank WordPress install, & exit the script.(Y/n) ${reset}"
+read run
+
+if [[ "$run" == n ]]; then
+exit_report
+   exit
+fi
+
+echo "${yellow}"
+echo "=========================="
+echo "WP Now - Configure options"
+echo "=========================="
+echo "${reset}"
+sleep 1
+
+echo -e "${yellow}Configure pretty permalinks...${reset}"
+sleep 2
+wp rewrite structure '/%year%/%monthnum%/%postname%/' --hard
+wp rewrite flush --hard
+
+# Update WordPress options
+echo -e "${yellow}Configure the website title & set admin email to ${adminemail}... ${reset}"
+sleep 2
+wp option update blogdescription 'Welcome to our website'
+wp option update blog_public 'on' # set to off to disable search engine crawling
+wp option update admin_email '$adminemail'
+
+echo -e "${yellow}Set up image sizes to 400x400-tn / 800-m / 1200-ml / 1600-l ...${reset}"
+sleep 2
+wp option update thumbnail_size_h '400'
+wp option update thumbnail_size_w '400'
+wp option update thumbnail_crop '0'
+wp option update medium_size_h '0'
+wp option update medium_size_w '800'
+wp option update medium_large_size_h '0'
+wp option update medium_large_size_w '1200'
+wp option update large_size_h '0'
+wp option update large_size_w '1600'
+wp option update image_default_size 'medium'
+wp_option_update image_default_align 'right'
+
+echo -e "${yellow}Turn off commenting by default to cut down on spam...${reset}"
+sleep 2
+wp option update comment_moderation 'true'
+wp option update default_comment_status 'closed'
+wp option update comments_notify '1'
+wp option update default_ping_status 'closed' 
+wp option update default_pingback_flag '0'
+wp option update close_comments_for_old_posts '1'
+
+echo -e "${yellow}Remove default pages and add useful starter pages (Home / About / Contact / Terms)...${reset}"
+sleep 2
+wp post delete $(wp post list --post_type='page' --format=ids) # remove 'hello world' page
+wp post delete $(wp post list --post_type='post' --format=ids) # remove 'hello world' post
+wp post create --post_type=page --post_title='Homepage' --post_content='Edit this page in Elementor to get started.' --post_status=private
+wp post create --post_type=page --post_title='About' --post_content='Edit this page in Elementor to get started.' --post_status=private 
+wp post create --post_type=page --post_title='Contact' --post_content='Edit this page in Elementor to get started.' --post_status=private
+wp post create --post_type=page --post_title='Terms and Conditions' --post_content='Edit this page in Elementor to get started.' --post_status=private
+
+echo -e "${yellow}Configure homepage to point to 'Homepage'...${reset}"
+sleep 2
+wp option update page_on_front $(wp post list --post_type=page --pagename="homepage" --format=ids);
+wp option update show_on_front 'page'
+
+echo -e "${yellow}Setup menu system...${white}"
+wp menu create "Main Menu"
+wp menu location assign main-menu menu-1
+
+echo -e "${yellow}Add menu items...${white}"
+wp menu item add-post main-menu $(wp post list --post_type=page --pagename="homepage" --format=ids) --title="Home"
+wp menu item add-post main-menu $(wp post list --post_type=page --pagename="about" --format=ids)
+wp menu item add-post main-menu $(wp post list --post_type=page --pagename="contact" --format=ids)
+wp menu item add-post main-menu $(wp post list --post_type=page --pagename="terms-and-conditions" --format=ids) --parent-id=$(wp post list --post_type=page --pagename="about" --format=ids)
+
+echo -e "${yellow}Remove redundant plugins...${white}"
+wp plugin delete akismet hello
+
+echo -e "${yellow}Flush permalinks...${white}"
+sleep 2
+wp rewrite flush --hard
+
+echo -e "${green}${tick}Configuration is complete. Go to ${siteurl}/wp-admin/options.php to see additional changes.${reset}"
+sleep 2
+
+# Plugins to install
+plugins="wp-cerber wordpress-seo health-check query-monitor"
+
+echo -e "${yellow}Would you like to set up useful plugins? \n
+The plugins are: ${plugins} \n
+Consult README.md for more information. Also read the script to see these options in detail. \n
+Otherwise, type 'n' if you'd like to exit the script.(Y/n) ${reset}"
+read run
+
+if [[ "$run" == n ]]; then
+exit_report
+   exit
+fi
+
+echo "${yellow}"
+echo "========================"
+echo "WP Now - Install Plugins"
+echo "========================"
+echo "${reset}"
+sleep 1
+
+echo -e "${yellow}Add useful plugins...${white}"
+wp plugin install ${plugins}
+
+echo -e "${green}${tick}Plugin install complete.${reset}"
+sleep 2
+
+echo -e "${yellow}Would you like to set up Elementor page builder + Elementor Hello base theme? \n
+Consult README.md for more information. Also read the script to see these options in detail. \n
+Otherwise, type 'n' if you'd like to exit the script.(Y/n) ${reset}"
+read run
+
+if [[ "$run" == n ]]; then
+exit_report
+   exit
+fi
+
+echo "${yellow}"
+echo "=========================="
+echo "WP Now - Install Elementor"
+echo "=========================="
+echo "${reset}"
+sleep 1
+
+echo -e "${yellow}Install plugin...${reset}"
+sleep 2
+wp plugin install elementor --activate-network
+
+echo -e "${yellow}Configure plugin...${white}"
+sleep 2
+wp option update elementor_default_generic_fonts '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif'
+wp option update elementor_container_width '1200'
+
+echo -e "${yellow}Install & Set up 'Elementor Hello' base template...${white}"
+wp theme install https://github.com/pojome/elementor-hello-theme/archive/master.zip --activate
+
+echo -e "${yellow}Remove other default themes...${white}"
+wp theme delete kubrick twentyten twentyeleven twentytwelve twentythirteen twentyfourteen twentyfifteen twentysixteen twentyseventeen twentyeighteen twentynineteen twentytwenty twentytwentyone twentytwentytwo twentytwentythree twentytwentyfour twentytwentyfive
+
+echo -e "${green}${tick}Configuration is complete. Go to ${siteurl}/wp-admin/options.php to see additional changes.${reset}"
+sleep 2
+
+echo -e "${yellow}Would you like to set up Elementor Pro & enable Maintenance Mode placeholder page? \n
+A copy of the Pro plugin must be available in ~/wp-pro-plugins/. \n
+Consult README.md for more information. Also read the script to see these options in detail. \n
+Otherwise, type 'n' if you'd like to exit the script.(Y/n) ${reset}"
+read run
+
+if [[ "$run" == n ]]; then
+exit_report
+   exit
+fi
+
+echo "${yellow}"
+echo "=============================="
+echo "WP Now - Install Elementor Pro"
+echo "=============================="
+echo "${reset}"
+sleep 1
+
+echo -e "${yellow}Add plugin...${white}"
+sleep 2
+cp -r ~/.wp-pro-plugins/elementor-pro ./wp-content/wp-plugins
+
+echo -e "${yellow}Activate plugin...${white}"
+sleep 2
+wp plugin activate elementor-pro --network
+wp plugin update elementor-pro
+
+echo -e "${yellow}Licence Elementor Pro...${white}"
+sleep 2
+echo -e "${blue}Please enter your Elementor Pro activation key: ${white}"
+read -s elemkey
+wp elementor-pro license activate ${elemkey}
+
+echo -e "${yellow}Turn on 'Maintenance Mode'...${white}"
+sleep 2
+wp post create --post_type=elementor_library --post_title='Under Maintenance' --post_content='This website is under maintenace - please visit again soon.' --post_status=publish
+wp option update elementor_maintenance_mode_exclude_mode 'logged_in'
+wp option update elementor_maintenance_mode_template_id $(wp post list --post_type="elementor_library" --format=ids);
+wp option update elementor_maintenance_mode_mode 'coming_soon'
+
+echo -e "${yellow}Flush permalinks...${white}"
+sleep 2
+wp rewrite flush --hard
+
+echo -e "${green}${tick} Elementor Pro & Maintenance Mode configured."
+sleep 2
+
+echo -e "${yellow}Would you like to set up WP DB Migrate Pro? \n
+A copy of the Pro plugin must be available in ~/wp-pro-plugins/. \n
+Consult README.md for more information. Also read the script to see these options in detail. \n
+Otherwise, type 'n' if you'd like to exit the script.(Y/n) ${reset}"
+read run
+
+if [[ "$run" == n ]]; then
+exit_report
+   exit
+fi
+
+echo "${yellow}"
+echo "=================================="
+echo "WP Now - Install WP DB Migrate Pro"
+echo "=================================="
+echo "${reset}"
+sleep 1
+
+echo -e "${yellow}Add plugin...${white}"
+cp -r ~/.wp-pro-plugins/wp-migrate-db-pro* ./wp-content/wp-plugins
+
+echo -e "${yellow}Activate plugin...${white}"
+wp plugin activate wp-migrate-db-pro* --network
+wp plugin update wp-migrate-db-pro*
+
+echo -e "${yellow}Licence WP DB Migrate Pro...${white}"
+echo -e "${blue}* Please enter your WP DB Migrate Pro activation key: ${white}"
+read -s wpdbkey
+cat >> wp-config.php <<EOL
+    define( 'WPMDB_LICENCE', '${wpdbkey}' );
+EOL
+
+echo -e "${green}${tick} Elementor Pro & Maintenance Mode configured."
+sleep 2
+
+#The script is done
+exit_report
+
 
