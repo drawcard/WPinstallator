@@ -279,7 +279,7 @@ sleep 1
 
 echo -e "${yellow}Install plugin...${nc}"
 sleep 2
-wp plugin install elementor --activate-network
+wp plugin install elementor 
 
 echo -e "${yellow}Configure plugin...${nc}"
 sleep 2
@@ -317,7 +317,7 @@ cp -r ~/.wp-pro-plugins/elementor-pro ./wp-content/wp-plugins
 
 echo -e "${yellow}Activate plugin...${nc}"
 sleep 2
-wp plugin activate elementor-pro --network
+wp plugin activate elementor-pro 
 wp plugin update elementor-pro
 
 echo -e "${yellow}Licence Elementor Pro...${nc}"
@@ -360,7 +360,7 @@ echo -e "${yellow}Add plugin...${nc}"
 cp -r ~/.wp-pro-plugins/wp-migrate-db-pro* ./wp-content/wp-plugins
 
 echo -e "${yellow}Activate plugin...${nc}"
-wp plugin activate wp-migrate-db-pro wp-migrate-db-pro-cli wp-migrate-db-pro-media-files wp-migrate-db-pro-multisite-tools wp-migrate-db-pro-theme-plugin-files wp-migrate-db-pro-compatibility --network
+wp plugin activate wp-migrate-db-pro wp-migrate-db-pro-cli wp-migrate-db-pro-media-files wp-migrate-db-pro-multisite-tools wp-migrate-db-pro-theme-plugin-files wp-migrate-db-pro-compatibility 
 wp plugin update wp-migrate-db-pro wp-migrate-db-pro-cli wp-migrate-db-pro-media-files wp-migrate-db-pro-multisite-tools wp-migrate-db-pro-theme-plugin-files wp-migrate-db-pro-compatibility
 
 echo -e "${yellow}Licence WP DB Migrate Pro...${nc}"
