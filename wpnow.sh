@@ -107,9 +107,6 @@ echo -e "${green}${tick} Admin password '$adminpassword' has been generated. ${n
 echo -e "${yellow}WP Admin email:${nc}"
 read adminemail
 
-echo -e "${yellow}Installing Wordpress & configuring wp-config.php ... \n ${nc}"
-wp core install --url="http://${siteurl}" --title="${sitetitle}" --admin_user="${adminuser}" --admin_password="${adminpassword}" --admin_email="${adminemail}"
-
 echo -e "${yellow}Enabling debug & development settings in wp-config.php ... \n ${nc}"
 wp config create --dbname=${dbname} --dbuser=${dbuser} --dbpass=${dbpass} --extra-php <<PHP
 
@@ -128,6 +125,9 @@ define( "SCRIPT_DEBUG", false );
 // Unminify JS and CSS for extra debugging powers (true / false)
 define( 'CONCATENATE_SCRIPTS', false );
 PHP
+
+echo -e "${yellow}Installing Wordpress & configuring wp-config.php ... \n ${nc}"
+wp core install --url="http://${siteurl}" --title="${sitetitle}" --admin_user="${adminuser}" --admin_password="${adminpassword}" --admin_email="${adminemail}"
 
 echo -e "${yellow}Set .htaccess to protect sensitive files...${nc}"
 cat >> .htaccess <<EOL
