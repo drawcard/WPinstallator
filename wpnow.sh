@@ -2,10 +2,6 @@
 
 # install https://gist.github.com/xavierartot/61f7e6d7ab1e6318a1d0
 
-# Check for missing dependencies
-type wp >/dev/null 2>&1 || { echo >&2 "ERROR: This script requires wp-cli but it's not installed. Please visit https://make.wordpress.org/cli/handbook/installing/ and follow the installation instructions, then re-run this script."; exit 1; }
-type apg >/dev/null 2>&1 || { echo >&2 "ERROR: This script requires apg but it's not installed. Run 'sudo apt-get install apg' to install and then re-run this script. Aborting."; exit 1; }
-
 # Colours: https://stackoverflow.com/a/28938235
 black="\033[0;30m"        # Black
 red="\033[0;31m"          # Red
@@ -40,8 +36,17 @@ echo -e "${purple} You may now login at: ${siteurl}/wp-admin/${nc}"
 echo -e "${yellow}TIP: Run 'wp media regenerate' to apply preset dimensions to existing media files.\n ${nc}"
 }
 
-echo -e "To install in a subfolder, write the folder name. eg ~/www/path/to/wp/"
-echo -e "Otherwise hit Enter to install in the current directory:"
+# Check for missing dependencies
+type wp >/dev/null 2>&1 || { echo >&2 "ERROR: This script requires wp-cli but it's not installed. Please visit https://make.wordpress.org/cli/handbook/installing/ and follow the installation instructions, then re-run this script."; exit 1; }
+type apg >/dev/null 2>&1 || { echo >&2 "ERROR: This script requires apg but it's not installed. Run 'sudo apt-get install apg' to install and then re-run this script. Aborting."; exit 1; }
+
+echo "================"
+echo "WP Now - Welcome"
+echo "================"
+sleep 1
+
+echo -e "${yellow}To install in a subfolder, write the folder name. eg ~/www/path/to/wp/${nc}"
+echo -e "${yellow}Otherwise hit Enter to install in the current directory:${nc}"
 read folder
 
 if [[ "$folder" != "" ]]; then
