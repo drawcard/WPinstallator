@@ -82,7 +82,6 @@ Q4="FLUSH PRIVILEGES;"
 SQL="${Q1}${Q2}${Q3}${Q4}"
 $MYSQL -uroot -p -e "$SQL"
 
-
 echo "=================="
 echo "WP Now - CMS Setup"
 echo "=================="
@@ -150,7 +149,7 @@ apache_modules:
 EOL
 
 echo -e "${green}${tick} WordPress CMS has been successfully installed. ${nc}"
-sleep 2
+sleep 1
 
 echo -e "${yellow}Would you like to run additional custom configurations, plugins, themes? 
 Consult README.md for more information on what's installed and configured. 
@@ -169,19 +168,19 @@ echo "=========================="
 sleep 1
 
 echo -e "${yellow}Configure pretty permalinks...${nc}"
-sleep 2
+sleep 1
 wp rewrite structure '/%year%/%monthnum%/%postname%/' --hard
 wp rewrite flush --hard
 
 # Update WordPress options
 echo -e "${yellow}Configure the website title & set admin email to ${adminemail}... ${nc}"
-sleep 2
+sleep 1
 wp option update blogdescription 'Welcome to our website'
 wp option update blog_public 'on' # set to off to disable search engine crawling
 wp option update admin_email '$adminemail'
 
 echo -e "${yellow}Set up image sizes to 400x400-tn / 800-m / 1200-ml / 1600-l ...${nc}"
-sleep 2
+sleep 1
 wp option update thumbnail_size_h '400'
 wp option update thumbnail_size_w '400'
 wp option update thumbnail_crop '0'
@@ -195,7 +194,7 @@ wp option update image_default_size 'medium'
 wp_option_update image_default_align 'right'
 
 echo -e "${yellow}Turn off commenting by default to cut down on spam...${nc}"
-sleep 2
+sleep 1
 wp option update comment_moderation 'true'
 wp option update default_comment_status 'closed'
 wp option update comments_notify '1'
@@ -204,7 +203,7 @@ wp option update default_pingback_flag '0'
 wp option update close_comments_for_old_posts '1'
 
 echo -e "${yellow}Remove default pages and add useful starter pages (Home / About / Contact / Terms)...${nc}"
-sleep 2
+sleep 1
 wp post delete $(wp post list --post_type='page' --format=ids) # remove 'hello world' page
 wp post delete $(wp post list --post_type='post' --format=ids) # remove 'hello world' post
 wp post create --post_type=page --post_title='Homepage' --post_content='Edit this page in Elementor to get started.' --post_status=private
@@ -213,7 +212,7 @@ wp post create --post_type=page --post_title='Contact' --post_content='Edit this
 wp post create --post_type=page --post_title='Terms and Conditions' --post_content='Edit this page in Elementor to get started.' --post_status=private
 
 echo -e "${yellow}Configure homepage to point to 'Homepage'...${nc}"
-sleep 2
+sleep 1
 wp option update page_on_front $(wp post list --post_type=page --pagename="homepage" --format=ids);
 wp option update show_on_front 'page'
 
@@ -231,11 +230,11 @@ echo -e "${yellow}Remove redundant plugins...${nc}"
 wp plugin delete akismet hello
 
 echo -e "${yellow}Flush permalinks...${nc}"
-sleep 2
+sleep 1
 wp rewrite flush --hard
 
 echo -e "${green}${tick} Configuration is complete. Go to ${siteurl}/wp-admin/options.php to see additional changes.${nc}"
-sleep 2
+sleep 1
 
 # Plugins to install
 plugins="wp-cerber wordpress-seo health-check query-monitor"
@@ -260,7 +259,7 @@ echo -e "${yellow}Add useful plugins...${nc}"
 wp plugin install ${plugins}
 
 echo -e "${green}${tick} Plugin install complete.${nc}"
-sleep 2
+sleep 1
 
 echo -e "${yellow}Would you like to set up Elementor page builder + Elementor Hello base theme? 
 Consult README.md for more information. Also read the script to see these options in detail. 
@@ -278,11 +277,11 @@ echo "=========================="
 sleep 1
 
 echo -e "${yellow}Install plugin...${nc}"
-sleep 2
+sleep 1
 wp plugin install elementor 
 
 echo -e "${yellow}Configure plugin...${nc}"
-sleep 2
+sleep 1
 wp option update elementor_default_generic_fonts '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif'
 wp option update elementor_container_width '1200'
 
@@ -293,7 +292,7 @@ echo -e "${yellow}Remove other default themes...${nc}"
 wp theme delete kubrick twentyten twentyeleven twentytwelve twentythirteen twentyfourteen twentyfifteen twentysixteen twentyseventeen twentyeighteen twentynineteen twentytwenty twentytwentyone twentytwentytwo twentytwentythree twentytwentyfour twentytwentyfive
 
 echo -e "${green}${tick} Configuration is complete. Go to ${siteurl}/wp-admin/options.php to see additional changes.${nc}"
-sleep 2
+sleep 1
 
 echo -e "${yellow}Would you like to set up Elementor Pro & enable Maintenance Mode placeholder page? 
 A copy of the Pro plugin must be available in ~/wp-pro-plugins/. 
@@ -312,33 +311,33 @@ echo "=============================="
 sleep 1
 
 echo -e "${yellow}Add plugin...${nc}"
-sleep 2
+sleep 1
 cp -r ~/.wp-pro-plugins/elementor-pro ./wp-content/wp-plugins
 
 echo -e "${yellow}Activate plugin...${nc}"
-sleep 2
+sleep 1
 wp plugin activate elementor-pro 
 wp plugin update elementor-pro
 
 echo -e "${yellow}Licence Elementor Pro...${nc}"
-sleep 2
+sleep 1
 echo -e "${blue}Please enter your Elementor Pro activation key: ${nc}"
 read -s elemkey
 wp elementor-pro license activate ${elemkey}
 
 echo -e "${yellow}Turn on 'Maintenance Mode'...${nc}"
-sleep 2
+sleep 1
 wp post create --post_type=elementor_library --post_title='Under Maintenance' --post_content='This website is under maintenace - please visit again soon.' --post_status=publish
 wp option update elementor_maintenance_mode_exclude_mode 'logged_in'
 wp option update elementor_maintenance_mode_template_id $(wp post list --post_type="elementor_library" --format=ids);
 wp option update elementor_maintenance_mode_mode 'coming_soon'
 
 echo -e "${yellow}Flush permalinks...${nc}"
-sleep 2
+sleep 1
 wp rewrite flush --hard
 
 echo -e "${green}${tick} Elementor Pro & Maintenance Mode configured."
-sleep 2
+sleep 1
 
 echo -e "${yellow}Would you like to set up WP DB Migrate Pro? 
 A copy of the Pro plugin must be available in ~/wp-pro-plugins/. 
@@ -371,7 +370,7 @@ cat >> wp-config.php <<EOL
 EOL
 
 echo -e "${green}${tick} WP DB Migrate Pro installed and configured."
-sleep 2
+sleep 1
 
 #The script is done
 exit_report
