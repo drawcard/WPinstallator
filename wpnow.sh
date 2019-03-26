@@ -149,12 +149,12 @@ apache_modules:
    - mod_rewrite
 EOL
 
-echo -e "${green}${tick}WordPress CMS has been successfully installed. ${nc}"
+echo -e "${green}${tick} WordPress CMS has been successfully installed. ${nc}"
 sleep 2
 
-echo -e "${yellow}Would you like to run additional custom configurations, plugins, themes? \n
-Consult README.md for more information on what's installed and configured. \n
-Also read the script to see these options in detail. \n
+echo -e "${yellow}Would you like to run additional custom configurations, plugins, themes? 
+Consult README.md for more information on what's installed and configured. 
+Also read the script to see these options in detail. 
 Otherwise, type 'n' if you'd like to have a blank WordPress install, & exit the script.(Y/n) ${nc}"
 read run
 
@@ -234,15 +234,15 @@ echo -e "${yellow}Flush permalinks...${nc}"
 sleep 2
 wp rewrite flush --hard
 
-echo -e "${green}${tick}Configuration is complete. Go to ${siteurl}/wp-admin/options.php to see additional changes.${nc}"
+echo -e "${green}${tick} Configuration is complete. Go to ${siteurl}/wp-admin/options.php to see additional changes.${nc}"
 sleep 2
 
 # Plugins to install
 plugins="wp-cerber wordpress-seo health-check query-monitor"
 
-echo -e "${yellow}Would you like to set up useful plugins? \n
-The plugins are: ${plugins} \n
-Consult README.md for more information. Also read the script to see these options in detail. \n
+echo -e "${yellow}Would you like to set up useful plugins? 
+The plugins are: ${plugins} 
+Consult README.md for more information. Also read the script to see these options in detail. 
 Otherwise, type 'n' if you'd like to exit the script.(Y/n) ${nc}"
 read run
 
@@ -259,11 +259,11 @@ sleep 1
 echo -e "${yellow}Add useful plugins...${nc}"
 wp plugin install ${plugins}
 
-echo -e "${green}${tick}Plugin install complete.${nc}"
+echo -e "${green}${tick} Plugin install complete.${nc}"
 sleep 2
 
-echo -e "${yellow}Would you like to set up Elementor page builder + Elementor Hello base theme? \n
-Consult README.md for more information. Also read the script to see these options in detail. \n
+echo -e "${yellow}Would you like to set up Elementor page builder + Elementor Hello base theme? 
+Consult README.md for more information. Also read the script to see these options in detail. 
 Otherwise, type 'n' if you'd like to exit the script.(Y/n) ${nc}"
 read run
 
@@ -292,12 +292,12 @@ wp theme install https://github.com/pojome/elementor-hello-theme/archive/master.
 echo -e "${yellow}Remove other default themes...${nc}"
 wp theme delete kubrick twentyten twentyeleven twentytwelve twentythirteen twentyfourteen twentyfifteen twentysixteen twentyseventeen twentyeighteen twentynineteen twentytwenty twentytwentyone twentytwentytwo twentytwentythree twentytwentyfour twentytwentyfive
 
-echo -e "${green}${tick}Configuration is complete. Go to ${siteurl}/wp-admin/options.php to see additional changes.${nc}"
+echo -e "${green}${tick} Configuration is complete. Go to ${siteurl}/wp-admin/options.php to see additional changes.${nc}"
 sleep 2
 
-echo -e "${yellow}Would you like to set up Elementor Pro & enable Maintenance Mode placeholder page? \n
-A copy of the Pro plugin must be available in ~/wp-pro-plugins/. \n
-Consult README.md for more information. Also read the script to see these options in detail. \n
+echo -e "${yellow}Would you like to set up Elementor Pro & enable Maintenance Mode placeholder page? 
+A copy of the Pro plugin must be available in ~/wp-pro-plugins/. 
+Consult README.md for more information. Also read the script to see these options in detail. 
 Otherwise, type 'n' if you'd like to exit the script.(Y/n) ${nc}"
 read run
 
@@ -340,9 +340,9 @@ wp rewrite flush --hard
 echo -e "${green}${tick} Elementor Pro & Maintenance Mode configured."
 sleep 2
 
-echo -e "${yellow}Would you like to set up WP DB Migrate Pro? \n
-A copy of the Pro plugin must be available in ~/wp-pro-plugins/. \n
-Consult README.md for more information. Also read the script to see these options in detail. \n
+echo -e "${yellow}Would you like to set up WP DB Migrate Pro? 
+A copy of the Pro plugin must be available in ~/wp-pro-plugins/. 
+Consult README.md for more information. Also read the script to see these options in detail. 
 Otherwise, type 'n' if you'd like to exit the script.(Y/n) ${nc}"
 read run
 
