@@ -50,7 +50,6 @@ else
     path_arg=""
 fi
 
-echo "${yellow}"
 echo "======================="
 echo "WP Now - Database Setup"
 echo "======================="
@@ -83,11 +82,10 @@ Q4="FLUSH PRIVILEGES;"
 SQL="${Q1}${Q2}${Q3}${Q4}"
 $MYSQL -uroot -p -e "$SQL"
 
-echo "${yellow}"
+
 echo "=================="
 echo "WP Now - CMS Setup"
 echo "=================="
-echo "${reset}"
 sleep 1
 
 # Set to Australian. Update for other countries.
@@ -165,11 +163,9 @@ exit_report
    exit
 fi
 
-echo "${yellow}"
 echo "=========================="
 echo "WP Now - Configure options"
 echo "=========================="
-echo "${reset}"
 sleep 1
 
 echo -e "${yellow}Configure pretty permalinks...${reset}"
@@ -255,11 +251,9 @@ exit_report
    exit
 fi
 
-echo "${yellow}"
 echo "========================"
 echo "WP Now - Install Plugins"
 echo "========================"
-echo "${reset}"
 sleep 1
 
 echo -e "${yellow}Add useful plugins...${white}"
@@ -278,11 +272,9 @@ exit_report
    exit
 fi
 
-echo "${yellow}"
 echo "=========================="
 echo "WP Now - Install Elementor"
 echo "=========================="
-echo "${reset}"
 sleep 1
 
 echo -e "${yellow}Install plugin...${reset}"
@@ -314,11 +306,9 @@ exit_report
    exit
 fi
 
-echo "${yellow}"
 echo "=============================="
 echo "WP Now - Install Elementor Pro"
 echo "=============================="
-echo "${reset}"
 sleep 1
 
 echo -e "${yellow}Add plugin...${white}"
@@ -361,11 +351,9 @@ exit_report
    exit
 fi
 
-echo "${yellow}"
 echo "=================================="
 echo "WP Now - Install WP DB Migrate Pro"
 echo "=================================="
-echo "${reset}"
 sleep 1
 
 echo -e "${yellow}Add plugin...${white}"
