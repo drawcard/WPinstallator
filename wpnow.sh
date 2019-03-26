@@ -372,8 +372,8 @@ echo -e "${yellow}Add plugin...${white}"
 cp -r ~/.wp-pro-plugins/wp-migrate-db-pro* ./wp-content/wp-plugins
 
 echo -e "${yellow}Activate plugin...${white}"
-wp plugin activate wp-migrate-db-pro* --network
-wp plugin update wp-migrate-db-pro*
+wp plugin activate wp-migrate-db-pro wp-migrate-db-pro-cli wp-migrate-db-pro-media-files wp-migrate-db-pro-multisite-tools wp-migrate-db-pro-theme-plugin-files wp-migrate-db-pro-compatibility --network
+wp plugin update wp-migrate-db-pro wp-migrate-db-pro-cli wp-migrate-db-pro-media-files wp-migrate-db-pro-multisite-tools wp-migrate-db-pro-theme-plugin-files wp-migrate-db-pro-compatibility
 
 echo -e "${yellow}Licence WP DB Migrate Pro...${white}"
 echo -e "${blue}* Please enter your WP DB Migrate Pro activation key: ${white}"
@@ -382,7 +382,7 @@ cat >> wp-config.php <<EOL
     define( 'WPMDB_LICENCE', '${wpdbkey}' );
 EOL
 
-echo -e "${green}${tick} Elementor Pro & Maintenance Mode configured."
+echo -e "${green}${tick} WP DB Migrate Pro installed and configured."
 sleep 2
 
 #The script is done
