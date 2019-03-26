@@ -191,7 +191,7 @@ wp option update medium_large_size_w '1200'
 wp option update large_size_h '0'
 wp option update large_size_w '1600'
 wp option update image_default_size 'medium'
-wp_option_update image_default_align 'right'
+wp option update image_default_align 'right'
 
 echo -e "${yellow}Turn off commenting by default to cut down on spam...${nc}"
 sleep 1
