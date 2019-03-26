@@ -226,14 +226,14 @@ wp menu item add-post main-menu $(wp post list --post_type=page --pagename="abou
 wp menu item add-post main-menu $(wp post list --post_type=page --pagename="contact" --format=ids)
 wp menu item add-post main-menu $(wp post list --post_type=page --pagename="terms-and-conditions" --format=ids) --parent-id=$(wp post list --post_type=page --pagename="about" --format=ids)
 
-echo -e "${yellow}Remove redundant plugins...${nc}"
-wp plugin delete akismet hello
-
 echo -e "${yellow}Flush permalinks...${nc}"
 sleep 1
 wp rewrite flush --hard
 
-echo -e "${green}${tick} Configuration is complete. Go to ${siteurl}/wp-admin/options.php to see additional changes.${nc}"
+echo -e "${yellow}Remove redundant plugins...${nc}"
+wp plugin delete akismet hello
+
+echo -e "${green}${tick} Configuration is complete.${nc}"
 sleep 1
 
 # Plugins to install
@@ -295,7 +295,7 @@ echo -e "${green}${tick} Configuration is complete. Go to ${siteurl}/wp-admin/op
 sleep 1
 
 echo -e "${yellow}Would you like to set up Elementor Pro & enable Maintenance Mode placeholder page? 
-A copy of the Pro plugin must be available in ~/wp-pro-plugins/. 
+A copy of the Pro plugin must be available in ~/.wp-pro-plugins/. 
 Consult README.md for more information. Also read the script to see these options in detail. 
 Otherwise, type 'n' if you'd like to exit the script.(Y/n) ${nc}"
 read run
@@ -340,7 +340,7 @@ echo -e "${green}${tick} Elementor Pro & Maintenance Mode configured."
 sleep 1
 
 echo -e "${yellow}Would you like to set up WP DB Migrate Pro? 
-A copy of the Pro plugin must be available in ~/wp-pro-plugins/. 
+A copy of the Pro plugin must be available in ~/.wp-pro-plugins/. 
 Consult README.md for more information. Also read the script to see these options in detail. 
 Otherwise, type 'n' if you'd like to exit the script.(Y/n) ${nc}"
 read run
