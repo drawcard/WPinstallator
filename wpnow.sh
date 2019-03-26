@@ -358,10 +358,8 @@ sleep 1
 echo -e "${yellow}Add plugin...${nc}"
 cp -r ~/.wp-pro-plugins/wp-migrate-* ./wp-content/plugins/
 
-# Activate all plugin folders starting with wp-migrate-*
-
-
 echo -e "${yellow}Activate & update plugin...${nc}"
+# Activate all plugin folders starting with wp-migrate-*
 for i in $(ls -d wp-migrate-*); do wp plugin activate ${i%%/}; done
 for i in $(ls -d wp-migrate-*); do wp plugin update ${i%%/}; done
 
