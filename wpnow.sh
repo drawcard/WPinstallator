@@ -372,7 +372,9 @@ echo -e "${yellow}Licence WP DB Migrate Pro...${nc}"
 echo -e "${blue}* Please enter your WP DB Migrate Pro activation key: ${nc}"
 read -s wpdbkey
 cat >> wp-config.php <<EOL
-    define( 'WPMDB_LICENCE', '${wpdbkey}' );
+
+// WP DB Migrate Pro Licence Key
+define( 'WPMDB_LICENCE', '${wpdbkey}' );
 EOL
 
 echo -e "${green}${tick} WP DB Migrate Pro installed and configured."
