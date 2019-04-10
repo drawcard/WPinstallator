@@ -45,7 +45,7 @@ echo "WP Now - Welcome"
 echo "================"
 sleep 1
 
-currentdir = `pwd`
+currentdir=`echo $PWD`
 echo -e "${yellow}You are about to install Wordpress in this directory: ${currentdir}${nc}"
 echo -e "${yellow}Do you wish to continue? (Y/n)${nc}"
 
