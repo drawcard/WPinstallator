@@ -282,6 +282,7 @@ sleep 1
 echo -e "${yellow}Install plugin...${nc}"
 sleep 1
 wp plugin install elementor 
+wp plugin activate elementor 
 
 echo -e "${yellow}Configure plugin...${nc}"
 sleep 1
