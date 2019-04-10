@@ -45,14 +45,12 @@ echo "WP Now - Welcome"
 echo "================"
 sleep 1
 
-echo -e "${yellow}To install in a subfolder, write the folder name. eg ~/www/path/to/wp/${nc}"
-echo -e "${yellow}Otherwise hit Enter to install in the current directory:${nc}"
-read folder
+currentdir = `pwd`
+echo -e "${yellow}You are about to install Wordpress in this directory: ${currentdir}${nc}"
+echo -e "${yellow}Do you wish to continue? (Y/n)${nc}"
 
-if [[ "$folder" != "" ]]; then
-    mkdir $folder && cd $folder
-else
-    path_arg=""
+if [[ "$run" == n ]]; then
+   exit
 fi
 
 echo "======================="
@@ -360,14 +358,6 @@ echo "WP Now - Install WP DB Migrate Pro"
 echo "=================================="
 sleep 1
 
-echo -e "${yellow}Add plugin...${nc}"
-cp -r ~/.wp-pro-plugins/wp-migrate-* ./wp-content/plugins/
-
-echo -e "${yellow}Activate & update plugin...${nc}"
-# Activate all plugin folders starting with wp-migrate-*
-for i in $(ls -d wp-migrate-*); do wp plugin activate ${i%%/}; done
-for i in $(ls -d wp-migrate-*); do wp plugin update ${i%%/}; done
-
 echo -e "${yellow}Licence WP DB Migrate Pro...${nc}"
 echo -e "${blue}* Please enter your WP DB Migrate Pro activation key: ${nc}"
 read -s wpdbkey
@@ -376,6 +366,16 @@ cat >> wp-config.php <<EOL
 // WP DB Migrate Pro Licence Key
 define( 'WPMDB_LICENCE', '${wpdbkey}' );
 EOL
+
+echo -e "${yellow}Add plugin...${nc}"
+cp -r ~/.wp-pro-plugins/wp-migrate-* ./wp-content/plugins/
+
+echo -e "${yellow}Activate & update plugin...${nc}"
+# Activate all plugin folders starting with wp-migrate-*
+cd wp-content/plugins/
+for i in $(ls -d wp-migrate-*); do wp plugin activate ${i%%/}; done
+for i in $(ls -d wp-migrate-*); do wp plugin update ${i%%/}; done
+cd ../..
 
 echo -e "${green}${tick} WP DB Migrate Pro installed and configured."
 sleep 1
