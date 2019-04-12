@@ -385,6 +385,7 @@ elif [[ "$run" == 1 ]]; then
    then
       exit
    elif [[ "$regen" == y ]]
+   then
       wp media regenerate
    fi
 
