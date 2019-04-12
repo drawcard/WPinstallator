@@ -354,15 +354,16 @@ echo "WP Now - Welcome"
 echo "================"
 
 echo -e "Please make a selection, by pressing a key."
-echo -e "${purple} \n [i] New installation (run WPNow script)${nc}"
-echo -e "${blue} \n Or, run a task from the script independently:"
-echo -e "[1] Configure media image sizes & regenerate images"
-echo -e "[2] Install useful plugins"
-echo -e "[3] Install Elementor"
-echo -e "[4] Install Elementor Pro"
-echo -e "[5] Install WP DB Migrate Pro ${nc}"
+echo -e "${purple} \n   [i] New installation (run WPNow script)${nc}"
+echo -e "${blue} \nOr, run a task from the script independently:"
+echo -e "   [1] Configure media image sizes & regenerate images"
+echo -e "   [2] Install useful plugins"
+echo -e "   [3] Install Elementor"
+echo -e "   [4] Install Elementor Pro"
+echo -e "   [5] Install WP DB Migrate Pro ${nc}"
 
-echo "${red} \n Or press [x] to quit the script.${nc}"
+echo "${yellow}\nOr press [x] to quit the script.${nc}"
+read run
 
 # SELECTIONS
 if [[ "$run" == i ]]; then
