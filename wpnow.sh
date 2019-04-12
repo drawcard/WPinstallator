@@ -388,7 +388,7 @@ elif [[ "$run" == 1 ]]; then
    if [[ "$regen" == n ]]
    then
       exit
-   else
+   elif [[ "$regen" == y ]]
       wp media regenerate
    fi
 
