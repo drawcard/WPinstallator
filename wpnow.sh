@@ -33,17 +33,14 @@ echo -e "DB Pass: ${dbpass}"
 echo -e "-------------------- \n"
 
 echo -e "${purple} You may now login at: ${siteurl}/wp-admin/${nc}"
+echo -e "For security purposes, please change your admin password once logged in."
 echo -e "${yellow}TIP: Run 'wp media regenerate' to apply preset dimensions to existing media files.\n ${nc}"
 }
 
+function init {
 # Check for missing dependencies
 type wp >/dev/null 2>&1 || { echo >&2 "ERROR: This script requires wp-cli but it's not installed. Please visit https://make.wordpress.org/cli/handbook/installing/ and follow the installation instructions, then re-run this script."; exit 1; }
 type apg >/dev/null 2>&1 || { echo >&2 "ERROR: This script requires apg but it's not installed. Run 'sudo apt-get install apg' to install and then re-run this script. Aborting."; exit 1; }
-
-echo "================"
-echo "WP Now - Welcome"
-echo "================"
-sleep 1
 
 currentdir=`echo $PWD`
 echo -e "${yellow}You are about to install Wordpress in this directory: ${currentdir}${nc}"
@@ -53,10 +50,12 @@ read run
 if [[ "$run" == n ]]; then
    exit
 fi
+}
 
-echo "======================="
-echo "WP Now - Database Setup"
-echo "======================="
+function setup {
+echo "==========================="
+echo "WP Now - Setup DB & Install"
+echo "==========================="
 sleep 1
 
 echo -e "${yellow}Please enter a unique database name, eg. 'wp_clientname' (max 16 chars):${nc}"
@@ -86,11 +85,6 @@ Q4="FLUSH PRIVILEGES;"
 SQL="${Q1}${Q2}${Q3}${Q4}"
 $MYSQL -uroot -p -e "$SQL"
 
-echo "=================="
-echo "WP Now - CMS Setup"
-echo "=================="
-sleep 1
-
 # Set to Australian. Update for other countries.
 wp core download --locale="en_AU"
 
@@ -103,12 +97,12 @@ read sitetitle
 echo -e "${yellow}WP Admin username:${nc}"
 read adminuser
 
-echo -e "${yellow}Generating password... (this may take some time)${nc}"
-adminpassword=$(apg -a 1 -m 14 -n 1 -c cl_seed -E 0Ol1iI8B3vu\`\~\!\{\}\[\]\(\)\<\>\,\.\\\/\|\?\;\:\'\")
-echo -e "${green}${tick} Admin password '$adminpassword' has been generated. ${nc}"
-
 echo -e "${yellow}WP Admin email:${nc}"
 read adminemail
+
+echo -e "${yellow}Generating password... (this may take some time)${nc}"
+adminpassword=$(apg -a 1 -m 14 -n 1 -c cl_seed -E 0Ol1iI8B3vu\`\~\!\{\}\[\]\(\)\<\>\,\.\\\/\|\?\;\:\'\")
+echo -e "${green}${tick} Admin details: ${adminuser} (${adminemail}) & temporary password ${adminpassword} have been set. For security purposes change this password once you've logged in. ${nc}"
 
 echo -e "${yellow}Enabling debug & development settings in wp-config.php ... \n ${nc}"
 wp config create --dbname=${dbname} --dbuser=${dbuser} --dbpass=${dbpass} --extra-php <<PHP
@@ -154,35 +148,30 @@ EOL
 
 echo -e "${green}${tick} WordPress CMS has been successfully installed. ${nc}"
 sleep 1
+}
 
-echo -e "${yellow}Would you like to run additional custom configurations, plugins, themes? 
-Consult README.md for more information on what's installed and configured. 
-Also read the script to see these options in detail. 
-Otherwise, type 'n' if you'd like to have a blank WordPress install, & exit the script.(Y/n) ${nc}"
-read run
-
-if [[ "$run" == n ]]; then
-exit_report
-   exit
-fi
-
+function config_init {
 echo "=========================="
 echo "WP Now - Configure options"
 echo "=========================="
 sleep 1
-
+}
+function config_permalinks {
 echo -e "${yellow}Configure pretty permalinks...${nc}"
 sleep 1
 wp rewrite structure '/%year%/%monthnum%/%postname%/' --hard
 wp rewrite flush --hard
+}
 
+function config_title {
 # Update WordPress options
 echo -e "${yellow}Configure the website title & set admin email to ${adminemail}... ${nc}"
 sleep 1
 wp option update blogdescription 'Welcome to our website'
 wp option update blog_public 'on' # set to off to disable search engine crawling
 wp option update admin_email '$adminemail'
-
+}
+function config_images {
 echo -e "${yellow}Set up image sizes to 400x400-tn / 800-m / 1200-ml / 1600-l ...${nc}"
 sleep 1
 wp option update thumbnail_size_h '400'
@@ -196,7 +185,8 @@ wp option update large_size_h '0'
 wp option update large_size_w '1600'
 wp option update image_default_size 'medium'
 wp option update image_default_align 'right'
-
+}
+function config_comments {
 echo -e "${yellow}Turn off commenting by default to cut down on spam...${nc}"
 sleep 1
 wp option update comment_moderation 'true'
@@ -205,7 +195,8 @@ wp option update comments_notify '1'
 wp option update default_ping_status 'closed' 
 wp option update default_pingback_flag '0'
 wp option update close_comments_for_old_posts '1'
-
+}
+function config_pages {
 echo -e "${yellow}Remove default pages and add useful starter pages (Home / About / Contact / Terms)...${nc}"
 sleep 1
 wp post delete $(wp post list --post_type='page' --format=ids) # remove 'hello world' page
@@ -219,7 +210,8 @@ echo -e "${yellow}Configure homepage to point to 'Homepage'...${nc}"
 sleep 1
 wp option update page_on_front $(wp post list --post_type=page --pagename="homepage" --format=ids);
 wp option update show_on_front 'page'
-
+}
+function config_menu {
 echo -e "${yellow}Setup menu system...${nc}"
 wp menu create "Main Menu"
 wp menu location assign main-menu menu-1
@@ -233,48 +225,28 @@ wp menu item add-post main-menu $(wp post list --post_type=page --pagename="term
 echo -e "${yellow}Flush permalinks...${nc}"
 sleep 1
 wp rewrite flush --hard
+}
 
-echo -e "${yellow}Remove redundant plugins...${nc}"
-wp plugin delete akismet hello
-
-echo -e "${green}${tick} Configuration is complete.${nc}"
+function plugins {
+echo "========================"
+echo "WP Now - Install Plugins"
+echo "========================"
 sleep 1
 
 # Plugins to install
 plugins="wp-cerber wordpress-seo health-check query-monitor"
 
-echo -e "${yellow}Would you like to set up useful plugins? 
-The plugins are: ${plugins} 
-Consult README.md for more information. Also read the script to see these options in detail. 
-Otherwise, type 'n' if you'd like to exit the script.(Y/n) ${nc}"
-read run
-
-if [[ "$run" == n ]]; then
-exit_report
-   exit
-fi
-
-echo "========================"
-echo "WP Now - Install Plugins"
-echo "========================"
-sleep 1
+echo -e "${yellow}Remove redundant plugins...${nc}"
+wp plugin delete akismet hello
 
 echo -e "${yellow}Add useful plugins...${nc}"
 wp plugin install ${plugins}
 
 echo -e "${green}${tick} Plugin install complete.${nc}"
 sleep 1
+}
 
-echo -e "${yellow}Would you like to set up Elementor page builder + Elementor Hello base theme? 
-Consult README.md for more information. Also read the script to see these options in detail. 
-Otherwise, type 'n' if you'd like to exit the script.(Y/n) ${nc}"
-read run
-
-if [[ "$run" == n ]]; then
-exit_report
-   exit
-fi
-
+function elementor {
 echo "=========================="
 echo "WP Now - Install Elementor"
 echo "=========================="
@@ -298,18 +270,9 @@ wp theme delete kubrick twentyten twentyeleven twentytwelve twentythirteen twent
 
 echo -e "${green}${tick} Configuration is complete. Go to ${siteurl}/wp-admin/options.php to see additional changes.${nc}"
 sleep 1
+}
 
-echo -e "${yellow}Would you like to set up Elementor Pro & enable Maintenance Mode placeholder page? 
-A copy of the Pro plugin must be available in ~/.wp-pro-plugins/. 
-Consult README.md for more information. Also read the script to see these options in detail. 
-Otherwise, type 'n' if you'd like to exit the script.(Y/n) ${nc}"
-read run
-
-if [[ "$run" == n ]]; then
-exit_report
-   exit
-fi
-
+function elementorpro {
 echo "=============================="
 echo "WP Now - Install Elementor Pro"
 echo "=============================="
@@ -343,18 +306,9 @@ wp rewrite flush --hard
 
 echo -e "${green}${tick} Elementor Pro & Maintenance Mode configured."
 sleep 1
+}
 
-echo -e "${yellow}Would you like to set up WP DB Migrate Pro? 
-A copy of the Pro plugin must be available in ~/.wp-pro-plugins/. 
-Consult README.md for more information. Also read the script to see these options in detail. 
-Otherwise, type 'n' if you'd like to exit the script.(Y/n) ${nc}"
-read run
-
-if [[ "$run" == n ]]; then
-exit_report
-   exit
-fi
-
+function dbmigrate {
 echo "=================================="
 echo "WP Now - Install WP DB Migrate Pro"
 echo "=================================="
@@ -381,8 +335,66 @@ cd ../..
 
 echo -e "${green}${tick} WP DB Migrate Pro installed and configured."
 sleep 1
+}
 
-#The script is done
-exit_report
+
+# EXECUTE SCRIPT
+
+echo "================"
+echo "WP Now - Welcome"
+echo "================"
+sleep 1
+
+echo -e "Please make a selection, by pressing a key."
+echo -e "${purple} \n [i] New installation (run WPNow script)${nc}"
+echo -e "${blue} \n Or, run a task from the script independently:"
+echo -e "[1] Configure media image sizes & regenerate images"
+echo -e "[2] Install useful plugins"
+echo -e "[3] Install Elementor"
+echo -e "[4] Install Elementor Pro"
+echo -e "[5] Install WP DB Migrate Pro ${nc}"
+
+echo "${red} \n Or press [x] to quit the script.${nc}"
+
+# SELECTIONS
+if [[ "$run" == i ]]; then
+   init 
+   setup 
+   config_init
+   config_permalinks
+   config_title
+   config_comments
+   config_pages
+   config_menu
+   plugins 
+   elementor
+   elementorpro
+   dbmigrate
+   exit_report
+elif [[ "$run" == 1 ]]; then
+   config_images
+   echo -e "${yellow} Regenerate images now? (Y/n)${nc}"
+
+   read $regen
+   if [[ "$regen" == n ]]
+   then
+      exit
+   else
+      wp media regenerate
+   fi
+
+elif [[ "$run" == 2 ]]; then
+   plugins
+elif [[ "$run" == 3 ]]; then
+   elementor
+elif [[ "$run" == 4 ]]; then
+   elementorpro
+elif [[ "$run" == 5 ]]; then
+   dbmigrate
+elif [[ "$run" == x ]]; then
+   exit
+fi
+
+
 
 
