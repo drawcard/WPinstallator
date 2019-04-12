@@ -53,9 +53,9 @@ fi
 }
 
 function setup {
-echo "==========================="
-echo "WP Now - Setup DB & Install"
-echo "==========================="
+echo "================="
+echo "WP Now - Setup DB"
+echo "================="
 sleep 1
 
 echo -e "${yellow}Please enter a unique database name, eg. 'wp_clientname' (max 16 chars):${nc}"
@@ -85,8 +85,22 @@ Q4="FLUSH PRIVILEGES;"
 SQL="${Q1}${Q2}${Q3}${Q4}"
 $MYSQL -uroot -p -e "$SQL"
 
+echo -e "${green}${tick} Database setup complete.${nc}"
+sleep 1
+
+echo "==========================="
+echo "WP Now - Download PHP Files"
+echo "==========================="
+sleep 1
+
+echo -e "${yellow}Wordpress Locale (eg en_US, en_AU):${nc}"
+read sitelang
+
+echo -e "${yellow}Wordpress Version: (Type a version number, or type 'latest' for the latest version.) ${nc}"
+read siteversion
+
 # Set to Australian. Update for other countries.
-wp core download --locale="en_AU"
+wp core download --version="${siteversion}" --locale="${sitelang}"
 
 echo -e "${yellow}Site URL (without https://):${nc}"
 read siteurl
@@ -94,10 +108,10 @@ read siteurl
 echo -e "${yellow}Site title:${nc}"
 read sitetitle
 
-echo -e "${yellow}WP Admin username:${nc}"
+echo -e "${yellow}WP admin username:${nc}"
 read adminuser
 
-echo -e "${yellow}WP Admin email:${nc}"
+echo -e "${yellow}WP admin email:${nc}"
 read adminemail
 
 echo -e "${yellow}Generating password... (this may take some time)${nc}"
