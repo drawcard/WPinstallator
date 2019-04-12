@@ -100,7 +100,7 @@ echo -e "${yellow}Wordpress Version: (Type a version number, or type 'latest' fo
 read siteversion
 
 # Set to Australian. Update for other countries.
-wp core download --version="${siteversion}" --locale="${sitelang}"
+wp core download --skip-content --version="${siteversion}" --locale="${sitelang}"
 
 echo -e "${yellow}Site URL (without https://):${nc}"
 read siteurl
@@ -250,9 +250,6 @@ sleep 1
 # Plugins to install
 plugins="wp-cerber wordpress-seo health-check query-monitor"
 
-echo -e "${yellow}Remove redundant plugins...${nc}"
-wp plugin delete akismet hello
-
 echo -e "${yellow}Add useful plugins...${nc}"
 wp plugin install ${plugins}
 
@@ -278,9 +275,6 @@ wp option update elementor_container_width '1200'
 
 echo -e "${yellow}Install & Set up 'Elementor Hello' base template...${nc}"
 wp theme install https://github.com/pojome/elementor-hello-theme/archive/master.zip --activate
-
-echo -e "${yellow}Remove other default themes...${nc}"
-wp theme delete kubrick twentyten twentyeleven twentytwelve twentythirteen twentyfourteen twentyfifteen twentysixteen twentyseventeen twentyeighteen twentynineteen twentytwenty twentytwentyone twentytwentytwo twentytwentythree twentytwentyfour twentytwentyfive
 
 echo -e "${green}${tick} Configuration is complete. Go to ${siteurl}/wp-admin/options.php to see additional changes.${nc}"
 sleep 1
