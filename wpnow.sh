@@ -362,7 +362,7 @@ echo -e "${blue}   [3] Install Elementor ${nc}"
 echo -e "${blue}   [4] Install Elementor Pro ${nc}"
 echo -e "${blue}   [5] Install WP DB Migrate Pro ${nc}"
 
-echo "${yellow}\nOr press [x] to quit the script.${nc}"
+echo -e "${yellow}\nOr press [x] to quit the script.${nc}"
 read run
 
 # SELECTIONS
