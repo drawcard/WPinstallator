@@ -276,8 +276,9 @@ echo -e "${yellow}Configure plugin...${nc}"
 wp option update elementor_default_generic_fonts '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif'
 wp option update elementor_container_width '1200'
 
-echo -e "${yellow}Install & Set up 'Elementor Hello' base template...${nc}"
-wp theme install https://github.com/pojome/elementor-hello-theme/archive/master.zip --activate
+echo -e "${yellow}Install & Set up 'Elementor Hello' base template + child theme...${nc}"
+wp theme install hello-elementor 
+wp theme install https://github.com/drawcard/hello-elementor-theme/archive/child-theme.zip --activate
 
 echo -e "${green}${tick} Configuration is complete. Go to ${siteurl}/wp-admin/options.php to see additional changes.${nc}"
 
